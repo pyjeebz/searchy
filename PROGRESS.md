@@ -64,6 +64,9 @@ tag per milestone.
   same layout, one less nesting level).
 - 2026-09-15: Deposit cadence (design risk R6): deposit immediately after
   each query; evaporation per batch of 10. Human decision at kickoff review.
+- 2026-09-15: Negative rewards (design risk R1): clip the pheromone deposit
+  at ≥0 (`τ += Q·max(0, R)`); raw R kept for all metrics. Human decision at
+  kickoff review.
 - 2026-09-15: Git workflow: file-by-file commits with conventional commit
   messages; no milestone IDs in messages. Charter tags (kickoff, m6.1, ...)
   kept, applied after the milestone's commits.
