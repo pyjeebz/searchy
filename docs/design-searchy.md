@@ -118,17 +118,15 @@ These are the things I'd change or need a ruling on before coding:
    (quality drop with NO latency change) as a control. I'll flag this when
    we get there.
 
-3. **R3 — Shared τ vs per-type τ.**
-   The charter says τ is a 2×3 matrix per layer (shared across query types),
-   but M6.7 wants heatmaps "split by query type" showing math routing
-   differently from factual. With shared τ, type separation comes only
-   through η (which differs per type). That works — but the *heatmap* then
-   shows routing *probabilities* (τ·η combined), not raw τ. Proposal: single
-   shared τ (more faithful ACO, richer learning dynamics), and M6.7 plots
-   the **effective transition probabilities per type** + per-type traffic
-   shares. Per-type τ (a 2×3×4 tensor) would learn faster but is less
-   "ant-colony" and closer to 4 independent bandits. Decision needed:
-   **shared τ (recommended)** or per-type τ.
+3. **R3 — Shared τ vs per-type τ. — RESOLVED (human decision, kickoff):
+   single shared 2×3 pheromone matrix.** Type separation flows through η;
+   M6.7 heatmaps show effective routing probabilities per type (τ·η
+   combined) plus per-type traffic shares. Rationale: shared τ keeps
+   stigmergy (cross-type interaction through one pheromone field), which
+   is what produces the emergent ACO phenomena the project exists to
+   study and diagnose; per-type τ would reduce to 4 independent bandits
+   with little to diagnose. Performance risk (compromise solutions) is
+   accepted by design — a well-measured negative result beats a fudged win.
 
 4. **R4 — Evaporation cadence vs recovery speed.**
    ρ=0.05 per batch of 10 queries ⇒ web_search's pheromone halves roughly
@@ -161,3 +159,7 @@ These are the things I'd change or need a ruling on before coding:
 ## DoD for this milestone
 
 Human approves this doc (or requests changes). Then: commit, tag `m6.1`.
+
+**Status: APPROVED 2026-09-15.** All design risks resolved: R1 (deposit
+clip ≥0), R3 (shared τ), R6 (per-query deposit, batch evaporation). R2, R4,
+R5 stay as watch-items logged via diagnosis-log.md during the build.
