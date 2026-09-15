@@ -62,3 +62,8 @@ tag per milestone.
 - 2026-09-15: Project root is `/home/pyjeebz/searchy` (scaffolded in the
   existing working directory rather than creating an `aco-project/` subfolder —
   same layout, one less nesting level).
+- 2026-09-15: Deposit cadence (design risk R6): deposit immediately after
+  each query; evaporation per batch of 10. Human decision at kickoff review.
+- 2026-09-15: Git workflow: file-by-file commits with conventional commit
+  messages; no milestone IDs in messages. Charter tags (kickoff, m6.1, ...)
+  kept, applied after the milestone's commits.
