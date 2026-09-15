@@ -101,15 +101,11 @@ All produce `(path, quality, cost, latency)` per query.
 
 These are the things I'd change or need a ruling on before coding:
 
-1. **R1 — Reward can be negative, and the update assumes positive deposits.**
-   With λ=1, `small_llm`-heavy paths (3000 tokens, 1200 ms) get a penalty of
-   ~0.3 + 1.2 = 1.5 before any quality term — R is negative for most
-   expensive paths, and `τ += Q·R` with negative R drives τ toward 0 or
-   below. Proposal: **clip deposit at ≥ 0** (`τ += Q·max(0, R)`), keep raw
-   (possibly negative) R for *reporting/metrics* so the reward definition in
-   the charter is untouched. Alternative: rescale latency to /1e4 and keep R
-   positive-ish. I recommend the clip; it also matches classic ACO, which
-   deposits only positive quantities.
+1. **R1 — Reward can be negative, and the update assumes positive deposits.
+   — RESOLVED (human decision, kickoff): clip the deposit at ≥ 0**
+   (`τ += Q · max(0, R)`), keeping raw (possibly negative) R for
+   reporting/metrics so the reward definition is untouched. Matches classic
+   ACO, which deposits only positive quantities.
 
 2. **R2 — Latency penalty dominates the cost penalty by ~10×.**
    /1e3 for ms vs /1e4 for tokens means latency matters ~10× more per unit.
