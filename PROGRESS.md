@@ -14,7 +14,9 @@ tag per milestone.
       (**APPROVED 2026-09-15** — risks R1/R3/R6 resolved, tag m6.1)
 - [x] [me]   R0.1 gate — read primer, pass from-memory test
       (**PASSED 2026-09-15** — human notes)
-- [ ] [agent] M6.2 queries.py + tools.py
+- [x] [agent] M6.2 queries.py + tools.py (**DONE 2026-09-15**, tag m6.2 —
+      100 seed-deterministic queries, 6 tools with misleading ads,
+      18 tests passing)
 - [ ] [agent] M6.3 router.py (ACO core)
 - [ ] [agent] M6.4 baselines.py
 - [ ] [agent] M6.5 comparison experiment (100 queries × 5 seeds)
