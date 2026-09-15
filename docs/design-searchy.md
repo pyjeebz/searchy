@@ -152,12 +152,15 @@ These are the things I'd change or need a ruling on before coding:
    visibly loses on the misled types, or the demo teaches nothing. I'll
    tune ad-noise so greedy-advertised's loss is visible but not cartoonish.
 
-6. **R6 — Deposit per query vs per batch.**
-   The charter's update equation is written per batch, but says
-   "reward-weighted deposit" per path. Reading it as: deposit immediately
-   after each query (so within-batch learning exists), evaporate at batch
-   boundary. This matches how I've specced router.py above. If you intended
-   deposit-at-batch-end, say so — it changes M6.6 recovery timing.
+6. **R6 — Deposit per query vs per batch. — RESOLVED (human decision, kickoff):
+   deposit immediately after each query; evaporation stays at the batch
+   boundary.** Rationale: recovery speed is the flagship metric (a
+   batch-end deposit would burn ~9 of the 30-query recovery window on stale
+   pheromone), per-query deposit preserves within-batch ordering
+   information, and Searchy's sequential query stream has no parallel
+   colony, so immediate deposit is the honest translation of AS's
+   per-iteration deposit. This divergence from the original Ant System is
+   itself material for the "vs the original" comparison (R1.2).
 
 ## DoD for this milestone
 
