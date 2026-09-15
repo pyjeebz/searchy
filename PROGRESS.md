@@ -11,8 +11,9 @@ tag per milestone.
 - [x] [agent] R0.1 scaffold — docs/primer.md written (human gate: rewrite
       transition rule + update equation from memory → **pending**)
 - [x] [agent] M6.1 design doc — docs/design-searchy.md written
-      (human approval → **pending**)
-- [ ] [me]   R0.1 gate — read primer, pass from-memory test
+      (**APPROVED 2026-09-15** — risks R1/R3/R6 resolved, tag m6.1)
+- [x] [me]   R0.1 gate — read primer, pass from-memory test
+      (**PASSED 2026-09-15** — human notes)
 - [ ] [agent] M6.2 queries.py + tools.py
 - [ ] [agent] M6.3 router.py (ACO core)
 - [ ] [agent] M6.4 baselines.py
@@ -67,6 +68,11 @@ tag per milestone.
 - 2026-09-15: Negative rewards (design risk R1): clip the pheromone deposit
   at ≥0 (`τ += Q·max(0, R)`); raw R kept for all metrics. Human decision at
   kickoff review.
+- 2026-09-15: Pheromone structure (design risk R3): single shared 2×3 τ
+  matrix across query types; type separation flows through η. M6.7 heatmaps
+  show effective routing probabilities (τ·η) per type. Human decision at
+  kickoff review.
+- 2026-09-15: Design doc approved; primer gate passed. M6.1 closed (tag m6.1).
 - 2026-09-15: Git workflow: file-by-file commits with conventional commit
   messages; no milestone IDs in messages. Charter tags (kickoff, m6.1, ...)
   kept, applied after the milestone's commits.
