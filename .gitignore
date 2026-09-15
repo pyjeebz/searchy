@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Experiment outputs: configs AND results (CSV/JSON/figures, incl. the
+# flagship GIFs) are part of the honest record and are committed.
+# uv.lock is committed too.
