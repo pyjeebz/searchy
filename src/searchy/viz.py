@@ -1,7 +1,7 @@
 """Plots for the comparison experiments.
 
-Implements M6.5 (convergence plot). M6.6 will add the sabotage money plot
-and GIF; M6.7 the pheromone heatmaps.
+Implements M6.5 (convergence plot) and M6.6 (the sabotage money plot,
+static PNG + animated GIF). M6.7 will add the pheromone heatmaps.
 
 Non-interactive Agg backend throughout: figures are written to files,
 never shown.
@@ -17,6 +17,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.animation import FuncAnimation, PillowWriter  # noqa: E402
 
 # One style per method, reused across every M6.x figure for consistency.
 METHOD_STYLES: dict[str, dict] = {
@@ -85,4 +86,227 @@ def convergence_plot(
     fig.tight_layout()
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+
+
+# Layer-1 tools get their own colors so the money plot can show per-tool
+# curves; the sabotage target gets the alarm red.
+_TOOL_COLORS: dict[str, str] = {
+    "web_search": "#d62728",
+    "knowledge_base": "#2ca02c",
+    "vector_db": "#9467bd",
+}
+
+
+def _draw_money(
+    ax_share,
+    ax_reward,
+    *,
+    router_shares: dict[str, Sequence[float]],
+    share_band: tuple[Sequence[float], Sequence[float]] | None,
+    contrast_shares: dict[str, Sequence[float]],
+    reward_curves: dict[str, Sequence[float]],
+    reward_band: tuple[Sequence[float], Sequence[float]] | None,
+    window: int,
+    event_query: int,
+    share_threshold: float,
+    sabotaged_tool: str,
+    upto: int,
+    n_total: int,
+    event_shown: bool,
+    title: str,
+) -> None:
+    """(Re)draw both money-plot panels showing the first ``upto`` queries.
+
+    Top: Layer-1 traffic share per tool (router mean + seed band for the
+    sabotaged tool) with the never-adapting greedy and instantly-adapting
+    oracle shown on the sabotaged tool only. Bottom: rolling reward per
+    method. One frame of the GIF is exactly one call of this function.
+    """
+    ax_share.clear()
+    ax_reward.clear()
+    x = range(1, upto + 1)
+
+    # --- top panel: per-tool Layer-1 traffic share -------------------------
+    ax_share.set_ylim(0.0, 1.0)
+    ax_share.axhline(
+        share_threshold,
+        color="0.6",
+        linewidth=0.9,
+        linestyle=":",
+        label=f"DoD: below {share_threshold:.0%}",
+        zorder=0,
+    )
+    if share_band is not None:
+        ax_share.fill_between(
+            x,
+            share_band[0][:upto],
+            share_band[1][:upto],
+            color=_TOOL_COLORS.get(sabotaged_tool, "0.7"),
+            alpha=0.15,
+            zorder=0,
+            linewidth=0,
+        )
+    for name, curve in router_shares.items():
+        targeted = name == sabotaged_tool
+        ax_share.plot(
+            x,
+            curve[:upto],
+            color=_TOOL_COLORS.get(name, "0.45"),
+            linewidth=2.4 if targeted else 1.5,
+            label=name + (" (sabotaged)" if targeted else ""),
+            zorder=3 if targeted else 2,
+        )
+    for method, curve in contrast_shares.items():
+        style = METHOD_STYLES.get(method, {})
+        ax_share.plot(
+            x,
+            curve[:upto],
+            color=style.get("color", "0.4"),
+            linewidth=1.2,
+            linestyle="--",
+            alpha=0.9,
+            label=f"{method}: {sabotaged_tool} share",
+            zorder=1,
+        )
+    ax_share.set_ylabel(f"Layer-1 traffic share (rolling, window {window})")
+
+    # --- bottom panel: rolling reward per method ---------------------------
+    ax_reward.axhline(0.0, color="0.85", linewidth=0.8, zorder=0)
+    if reward_band is not None:
+        ax_reward.fill_between(
+            x,
+            reward_band[0][:upto],
+            reward_band[1][:upto],
+            color=METHOD_STYLES.get("pheromone_router", {}).get("color", "0.7"),
+            alpha=0.18,
+            zorder=0,
+            linewidth=0,
+        )
+    for method, curve in reward_curves.items():
+        style = METHOD_STYLES.get(method, {"label": method})
+        ax_reward.plot(x, curve[:upto], zorder=2, **style)
+    ax_reward.set_ylabel(f"reward (rolling mean, window {window})")
+    ax_reward.set_xlabel("query index")
+
+    # --- the event marker, once it has happened ---------------------------
+    if event_shown:
+        ax_share.axvline(
+            event_query,
+            color=_TOOL_COLORS.get(sabotaged_tool, "0.4"),
+            alpha=0.6,
+            linewidth=1.4,
+            label=f"{sabotaged_tool} sabotaged (#{event_query})",
+            zorder=0,
+        )
+        ax_reward.axvline(event_query, color="0.4", alpha=0.5, linewidth=1.2, zorder=0)
+
+    for ax in (ax_share, ax_reward):
+        ax.set_xlim(1, n_total)
+    ax_share.set_title(title)
+    ax_share.legend(loc="upper right", fontsize=7.5, ncol=2)
+    ax_reward.legend(loc="best", fontsize=8)
+
+
+def _money_data_len(curves: dict[str, Sequence[float]]) -> int:
+    return len(next(iter(curves.values())))
+
+
+def money_plot(
+    router_shares: dict[str, Sequence[float]],
+    share_band: tuple[Sequence[float], Sequence[float]] | None,
+    contrast_shares: dict[str, Sequence[float]],
+    reward_curves: dict[str, Sequence[float]],
+    reward_band: tuple[Sequence[float], Sequence[float]] | None,
+    *,
+    window: int,
+    event_query: int,
+    share_threshold: float,
+    sabotaged_tool: str,
+    out_path: str,
+    title: str,
+) -> None:
+    """The M6.6 money plot: traffic share and reward around the sabotage.
+
+    ``router_shares`` maps Layer-1 tool name -> rolling share curve
+    (across-seed mean), ``share_band`` the router's across-seed (min, max)
+    for the sabotaged tool, ``contrast_shares`` method name -> the
+    sabotaged tool's share for greedy/oracle, ``reward_curves`` method ->
+    rolling-mean reward (across-seed mean) with ``reward_band`` for the
+    router.
+    """
+    fig, (ax_share, ax_reward) = plt.subplots(2, 1, figsize=(8.5, 8.0), sharex=True)
+    n_total = _money_data_len(router_shares)
+    _draw_money(
+        ax_share,
+        ax_reward,
+        router_shares=router_shares,
+        share_band=share_band,
+        contrast_shares=contrast_shares,
+        reward_curves=reward_curves,
+        reward_band=reward_band,
+        window=window,
+        event_query=event_query,
+        share_threshold=share_threshold,
+        sabotaged_tool=sabotaged_tool,
+        upto=n_total,
+        n_total=n_total,
+        event_shown=True,
+        title=title,
+    )
+    fig.tight_layout()
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+
+
+def money_gif(
+    router_shares: dict[str, Sequence[float]],
+    share_band: tuple[Sequence[float], Sequence[float]] | None,
+    contrast_shares: dict[str, Sequence[float]],
+    reward_curves: dict[str, Sequence[float]],
+    reward_band: tuple[Sequence[float], Sequence[float]] | None,
+    *,
+    window: int,
+    event_query: int,
+    share_threshold: float,
+    sabotaged_tool: str,
+    out_path: str,
+    title: str,
+    fps: int = 10,
+) -> None:
+    """Animated money plot: one frame per query, event line at its firing.
+
+    Same data as :func:`money_plot`; the x-axis is pinned to the full
+    stream so the animation reads as the run unfolding, and the sabotage
+    line appears exactly when the event query arrives.
+    """
+    fig, (ax_share, ax_reward) = plt.subplots(2, 1, figsize=(8.5, 8.0), sharex=True)
+    n_total = _money_data_len(router_shares)
+
+    def draw_frame(upto: int) -> list:
+        _draw_money(
+            ax_share,
+            ax_reward,
+            router_shares=router_shares,
+            share_band=share_band,
+            contrast_shares=contrast_shares,
+            reward_curves=reward_curves,
+            reward_band=reward_band,
+            window=window,
+            event_query=event_query,
+            share_threshold=share_threshold,
+            sabotaged_tool=sabotaged_tool,
+            upto=upto,
+            n_total=n_total,
+            event_shown=upto >= event_query,
+            title=title,
+        )
+        return []
+
+    animation = FuncAnimation(
+        fig, draw_frame, frames=range(1, n_total + 1), blit=False
+    )
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    animation.save(out_path, writer=PillowWriter(fps=fps), dpi=100)
     plt.close(fig)
