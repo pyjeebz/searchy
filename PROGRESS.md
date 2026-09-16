@@ -26,7 +26,13 @@ tag per milestone.
       greedy-cheapest, greedy-advertised, oracle; 44 tests passing. Oracle
       beats greedy-advertised by +0.36/+0.24/+0.20 expected reward on the
       three misled types, equal on factual — the D2 ads have teeth)
-- [ ] [agent] M6.5 comparison experiment (100 queries × 5 seeds)
+- [x] [agent] M6.5 comparison experiment (100 queries × 5 seeds) (**DONE
+      2026-09-16**, tag m6.5 — 55 tests passing. SPLIT NEGATIVE RESULT
+      (D4): clause (a) met at the bare minimum — router beats
+      greedy-advertised on 4/5 seeds, margins +0.05/+2.37/−0.24/+0.76/
+      +1.14, and the edge is cost-side (final quality 0.411 is BELOW the
+      strawman's 0.429); clause (b) failed hard — router at 48.6% of
+      oracle utility. Learning curve flat from query ~5. Nothing tuned)
 - [ ] [agent] M6.6 sabotage demo (money plot + GIF)
 - [ ] [agent] M6.7 pheromone heatmaps
 - [ ] GATE 1 — 2-min narratable demo + all artifacts
@@ -111,3 +117,12 @@ tag per milestone.
   call noise. Paired-draw variance reduction is deliberately NOT built
   in; if M6.5's tight comparisons need it, that is an experiment-design
   decision to make then.
+- 2026-09-16: M6.5 closed as a measured negative result (D4 in
+  docs/diagnosis-log.md): the router ties greedy-advertised (4/5 seeds,
+  thin margins, edge is cost not quality) and reaches only 48.6% of
+  oracle utility. The ROADMAP's alternative branch — "measured negative
+  result + diagnosis-log entry" — was taken; ε/ρ/β and stream length all
+  untouched. Options raised for the human: tune ε/ρ/β, lengthen the
+  stream, or proceed as-is to M6.6/M6.7 and let Stage 4 (MMAS bounds +
+  restarts, M6-RT) fix it — the demo-first bet is that the failure IS
+  the demo material.
