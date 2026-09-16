@@ -1,0 +1,43 @@
+# M6.6 — sabotage adaptation demo.
+#
+# Protocol: the SAME query stream and router parameters as m6.5-comparison,
+# verbatim — nothing is tuned. At query #50 web_search's true quality drops
+# to 0.05 and its latency triples (a pure environment change: the ads keep
+# lying, the router's learning state is untouched). DoD: on >=4/5 seeds the
+# router moves its Layer-1 traffic off web_search (<20% share) within 30
+# queries and recovers to >=90% of its pre-event mean reward. See
+# docs/diagnosis-log.md D3/D4 for why the recovery clause is at risk.
+
+name: m6.6-sabotage
+n_per_type: 25          # 4 types x 25 = 100 queries per run
+query_seed: 100          # the one shared stream (identical to M6.5)
+seeds: [0, 1, 2, 3, 4]
+methods:
+  - pheromone_router
+  - greedy-advertised
+  - oracle
+
+router:                  # passed verbatim to PheromoneRouter (M6.3 defaults)
+  alpha: 1.0
+  beta: 2.0
+  rho: 0.05
+  epsilon: 0.1
+  q: 1.0
+  tau0: 1.0
+  evaporation_batch: 10
+
+rolling_window: 10       # one evaporation batch
+
+sabotage:                # the DoD's environment event
+  tool: web_search
+  query: 50              # 1-based: fires right before query #50 is routed
+  quality: 0.05          # true quality floored here for every type
+  latency_multiplier: 3
+  adaptation_window: 30  # DoD window: queries #50..#79
+  share_threshold: 0.2   # web_search Layer-1 share must fall strictly below
+  recovery_fraction: 0.9 # rolling reward must reach >= 90% of pre-event mean
+
+output_dir: experiments/results/m6.6-sabotage
+figure: experiments/results/figures/m6.6-sabotage.png
+gif: experiments/results/figures/m6.6-sabotage.gif
+gif_fps: 10
