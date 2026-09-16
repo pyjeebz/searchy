@@ -34,9 +34,13 @@ AD_MIN = 0.05  # never advertise a literally-zero skill
 
 # Deliberately misleading (tool, type) advertisements: (tool, type) -> ad.
 # These are the "ads" the colony must learn to distrust through experience.
+# Chosen against the REWARD landscape (design doc M6.1, corrected during
+# M6.3 build — see docs/diagnosis-log.md D1/D2): knowledge_base oversells
+# summarization (true 0.50), calculator undersells math (true 0.98). Both
+# make greedy-advertised pick a clearly worse path.
 MISLEADING_ADS: dict[tuple[str, QueryType], float] = {
-    ("knowledge_base", QueryType.MATH): 0.90,  # true quality 0.35
-    ("vector_db", QueryType.FACTUAL): 0.85,  # true quality 0.70
+    ("knowledge_base", QueryType.SUMMARIZATION): 0.90,  # true quality 0.50
+    ("calculator", QueryType.MATH): 0.30,  # true quality 0.98 (undersell)
 }
 
 
@@ -107,13 +111,18 @@ _TRUE_QUALITY: dict[str, dict[QueryType, float]] = {
 }
 
 # (cost_tokens, latency_ms): good-for-type is deliberately NOT cheap.
+# Scaled so that with the charter reward formula (cost/1e4 + latency/1e3,
+# lambda=1) penalties land at 0.04-0.30 against quality products of
+# 0.02-0.71: quality dominates, cost is a real second-order trade-off.
+# (Rescaled during the M6.3 build; originally 1500 tok/800 ms for
+# web_search etc., which made penalties 1.0-2.5 — see diagnosis-log D1.)
 _COST_LATENCY: dict[str, tuple[int, int]] = {
-    "web_search": (1500, 800),
-    "vector_db": (400, 120),
-    "knowledge_base": (350, 150),
-    "small_llm": (3000, 1200),
-    "calculator": (200, 50),
-    "regex_processor": (250, 100),
+    "web_search": (500, 60),
+    "vector_db": (150, 15),
+    "knowledge_base": (120, 20),
+    "small_llm": (1000, 90),
+    "calculator": (60, 5),
+    "regex_processor": (80, 10),
 }
 
 _LAYER: dict[str, int] = {
