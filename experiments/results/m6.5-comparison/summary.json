@@ -1,0 +1,145 @@
+{
+  "protocol": {
+    "n_queries": 100,
+    "query_seed": 100,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "router_params": {
+      "alpha": 1.0,
+      "beta": 2.0,
+      "rho": 0.05,
+      "epsilon": 0.1,
+      "q": 1.0,
+      "tau0": 1.0,
+      "evaporation_batch": 10
+    },
+    "rolling_window": 10,
+    "note": "one shared query stream; per seed every method runs it with a fresh generator seeded s; call-noise draws differ across methods by construction (see baselines.py docstring)"
+  },
+  "method_means": [
+    {
+      "method": "pheromone_router",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 17.701420723387553,
+      "cumulative_reward_std": 0.705929635578001,
+      "mean_reward": 0.17701420723387556,
+      "final_quality": 0.4105044785549736,
+      "mean_cost_tokens": 1125.1399999999999,
+      "mean_latency_ms": 110.50999999999999
+    },
+    {
+      "method": "random",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 13.098711519999773,
+      "cumulative_reward_std": 1.846282880153333,
+      "mean_reward": 0.1309871151999977,
+      "final_quality": 0.24576542833400236,
+      "mean_cost_tokens": 646.72,
+      "mean_latency_ms": 67.66999999999999
+    },
+    {
+      "method": "greedy-cheapest",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 9.136001275163864,
+      "cumulative_reward_std": 0.2070980463437181,
+      "mean_reward": 0.09136001275163863,
+      "final_quality": 0.13055658126150993,
+      "mean_cost_tokens": 210.0,
+      "mean_latency_ms": 20.0
+    },
+    {
+      "method": "greedy-advertised",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 16.88480702999925,
+      "cumulative_reward_std": 0.34997224388309844,
+      "mean_reward": 0.16884807029999252,
+      "final_quality": 0.4292819084730251,
+      "mean_cost_tokens": 1317.5,
+      "mean_latency_ms": 128.75
+    },
+    {
+      "method": "oracle",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 36.458295629870484,
+      "cumulative_reward_std": 0.24545058442317397,
+      "mean_reward": 0.3645829562987048,
+      "final_quality": 0.5195745974215258,
+      "mean_cost_tokens": 765.0,
+      "mean_latency_ms": 76.25
+    }
+  ],
+  "per_type_mean_reward": {
+    "greedy-advertised|code-snippet": 0.21791137685383988,
+    "greedy-advertised|factual-lookup": 0.26575484031235697,
+    "greedy-advertised|math-calculation": -0.054443366912571824,
+    "greedy-advertised|text-summarization": 0.24616943094634502,
+    "greedy-cheapest|code-snippet": 0.09218291978476818,
+    "greedy-cheapest|factual-lookup": 0.029394833283398664,
+    "greedy-cheapest|math-calculation": 0.24830438754405662,
+    "greedy-cheapest|text-summarization": -0.00444208960566898,
+    "oracle|code-snippet": 0.41391651909439836,
+    "oracle|factual-lookup": 0.26575484031235697,
+    "oracle|math-calculation": 0.2950779084324614,
+    "oracle|text-summarization": 0.4835825573556027,
+    "pheromone_router|code-snippet": 0.23776295518045415,
+    "pheromone_router|factual-lookup": 0.22733186370771202,
+    "pheromone_router|math-calculation": -0.030105216792451844,
+    "pheromone_router|text-summarization": 0.273067226839788,
+    "random|code-snippet": 0.19679223525502618,
+    "random|factual-lookup": 0.13187944795095555,
+    "random|math-calculation": 0.04813927309576173,
+    "random|text-summarization": 0.1471375044982474
+  },
+  "verdict": {
+    "beats_greedy_advertised": {
+      "wins": 4,
+      "required": 4,
+      "n_seeds": 5,
+      "per_seed": [
+        {
+          "seed": 0,
+          "router_cumulative": 17.40924378010759,
+          "greedy_cumulative": 17.357095411520348,
+          "router_wins": true
+        },
+        {
+          "seed": 1,
+          "router_cumulative": 18.658281805308533,
+          "greedy_cumulative": 16.285033618894417,
+          "router_wins": true
+        },
+        {
+          "seed": 2,
+          "router_cumulative": 16.564240556013157,
+          "greedy_cumulative": 16.801522593147826,
+          "router_wins": false
+        },
+        {
+          "seed": 3,
+          "router_cumulative": 17.73039141868272,
+          "greedy_cumulative": 16.974858530642315,
+          "router_wins": true
+        },
+        {
+          "seed": 4,
+          "router_cumulative": 18.14494605682578,
+          "greedy_cumulative": 17.00552499579135,
+          "router_wins": true
+        }
+      ],
+      "met": true
+    },
+    "within_10pct_of_oracle": {
+      "router_mean_utility": 0.17701420723387556,
+      "oracle_mean_utility": 0.3645829562987048,
+      "ratio": 0.48552518480553125,
+      "met": false
+    },
+    "dod_met": false
+  }
+}
