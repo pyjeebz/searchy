@@ -102,3 +102,44 @@ Format:
   tuning ε/ρ/β, a longer stream, or reporting the negative result.
 - Reading trigger: R1.2 (our loop vs the original), R2.1 (MMAS bounds),
   R2.2 (ACS exploitation), R4, R5.
+
+## D4. M6.5 verdict: a split negative result — parity with the strawman, half of oracle (M6.5 run, 2026-09-16)
+- Observed: the M6.5 DoD fails, via its sanctioned negative-result path.
+  Clause (a) — beat greedy-advertised on cumulative reward on ≥4/5 seeds —
+  technically MET at exactly 4/5, but the margins are +0.05, +2.37, −0.24,
+  +0.76, +1.14 across seeds 0–4: seed 0 wins by a rounding error, seed 1's
+  outlier carries the clause, seed 2 loses (cumulative means: router
+  17.70 ± 0.71 vs greedy-advertised 16.88 ± 0.35). Clause (b) — within 10%
+  of the oracle's mean utility — NOT MET by a wide margin: router +0.177
+  vs oracle +0.365, ratio 0.486. More honest than either clause: the
+  router's *after-learning* quality (final 25 queries) is 0.411, BELOW
+  greedy-advertised's 0.429 — its cumulative edge is mostly the cost term
+  (mean 1125 vs 1318 tokens, 110.5 vs 128.8 ms), i.e. it discovered
+  cheaper tools, not better paths. Per type it wins slightly on
+  summarization (+0.273 vs +0.246) and code (+0.238 vs +0.218), loses on
+  factual (+0.227 vs +0.266, the ε-exploration tax D3(d) predicted), and
+  stays negative on math (−0.030 vs oracle +0.295 — the calculator
+  undersell is still never overcome).
+- Reproduced: 5 seeds × 100 queries on one shared stream (query_seed 100),
+  M6.3 router parameters verbatim (α=1, β=2, ε=0.1, ρ=0.05, Q=1, τ0=1,
+  batch 10). Committed under experiments/results/m6.5-comparison/
+  (records.csv, summary.csv, summary.json); figure at
+  experiments/results/figures/m6.5-convergence.png — the learning curve is
+  *flat* for the router from query ~5 onward: it starts at its plateau,
+  hugging greedy-advertised, never approaching oracle (D3(c) again).
+- Suspicion: the D3 lock-in mechanism, now measured end-to-end. Shared τ +
+  immediate deposit + weak evaporation converge to the advertised frontier;
+  the oracle's entire edge sits in the two paths the ads steer away from
+  (math knowledge_base+calculator, summarization vector_db+small_llm), and
+  the colony cannot reach them in 100 queries. Clause (b) was structurally
+  unreachable at these parameters; clause (a) passes only on a cost
+  artifact plus one lucky seed.
+- Action: reported as a measured negative result; NOTHING tuned (working
+  rule 4). Options on the table for the human, none taken: raise ε, raise
+  ρ, lower β, or lengthen the stream — each changes the demo's story and
+  is the human's call. The honest one-line summary for the blog is
+  "indistinguishable from the strawman it was meant to beat, at half the
+  oracle" — which is precisely the Stage-4 before-picture: MMAS pheromone
+  bounds + restarts (M6-RT backport) exist to fix exactly this.
+- Reading trigger: R2.1 (MMAS bounds), R2.2 (ACS exploitation), R1.2;
+  direct before-picture for the M6-RT backport.
