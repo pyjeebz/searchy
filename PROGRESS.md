@@ -22,7 +22,10 @@ tag per milestone.
       deposit, batch evaporation; 34 tests passing. Build findings logged
       as D1–D3 in docs/diagnosis-log.md, incl. two corrections to M6.2
       constants — human review welcome, veto = git revert)
-- [ ] [agent] M6.4 baselines.py
+- [x] [agent] M6.4 baselines.py (**DONE 2026-09-15**, tag m6.4 — random,
+      greedy-cheapest, greedy-advertised, oracle; 44 tests passing. Oracle
+      beats greedy-advertised by +0.36/+0.24/+0.20 expected reward on the
+      three misled types, equal on factual — the D2 ads have teeth)
 - [ ] [agent] M6.5 comparison experiment (100 queries × 5 seeds)
 - [ ] [agent] M6.6 sabotage demo (money plot + GIF)
 - [ ] [agent] M6.7 pheromone heatmaps
@@ -96,3 +99,15 @@ tag per milestone.
   the before-picture for the Stage-4 MMAS/restart backport. M6.5's
   beat-greedy DoD will be marginal at current parameters; M6.6 recovery
   speed is at risk (R4). No parameter changes without human go-ahead.
+- 2026-09-15: Baseline design decisions (M6.4): (a) greedy-cheapest's
+  "latency-scaled" cost = the charter's own penalty scale
+  (tokens/1e4 + ms/1e3), argmin per layer — type-blind by construction;
+  (b) every baseline *executes* through call_tool on the passed
+  generator, so per-query realized rewards are directly comparable to
+  the router's (each method is a self-contained process; the query
+  stream, pool, reward function, and call-noise model are shared, the
+  noise draws are not). The oracle is the upper bound *in expectation*
+  — its selection uses true profiles, its realized rewards still face
+  call noise. Paired-draw variance reduction is deliberately NOT built
+  in; if M6.5's tight comparisons need it, that is an experiment-design
+  decision to make then.
