@@ -1,0 +1,30 @@
+# M6.5 — router vs baselines comparison experiment.
+#
+# Protocol: ONE query stream (query_seed) shared by every method and every
+# seed; per seed each method runs the full stream with a fresh generator
+# seeded s. Router parameters are the M6.3 defaults, verbatim — nothing is
+# tuned here (see docs/diagnosis-log.md D3 for why the DoD is at risk).
+
+name: m6.5-comparison
+n_per_type: 25          # 4 types x 25 = 100 queries per run
+query_seed: 100          # the one shared stream
+seeds: [0, 1, 2, 3, 4]
+methods:
+  - pheromone_router
+  - random
+  - greedy-cheapest
+  - greedy-advertised
+  - oracle
+
+router:                  # passed verbatim to PheromoneRouter
+  alpha: 1.0
+  beta: 2.0
+  rho: 0.05
+  epsilon: 0.1
+  q: 1.0
+  tau0: 1.0
+  evaporation_batch: 10
+
+rolling_window: 10       # one evaporation batch
+output_dir: experiments/results/m6.5-comparison
+figure: experiments/results/figures/m6.5-convergence.png
