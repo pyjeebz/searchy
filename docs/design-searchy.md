@@ -43,15 +43,23 @@ sabotaged mid-stream.
 | calculator   | 0.10 | **0.98** | 0.05 | 0.20 |
 | regex_processor | 0.20 | 0.40 | 0.30 | 0.70 |
 
-  Costs/latencies (design targets): cheap tools ~200–500 tokens / 50–150 ms;
-  `web_search` ~1500 tokens / 800 ms; `small_llm` ~3000 tokens / 1200 ms.
+  Costs/latencies (design targets): cheap tools ~100–200 tokens / 10–30 ms;
+  `web_search` ~500 tokens / 60 ms; `small_llm` ~1000 tokens / 90 ms.
   Exact numbers finalized in M6.2; principle: good-for-type ≠ cheap, so
-  router faces real trade-offs.
+  router faces real trade-offs. *(Amended 2026-09-15, D1: the original
+  targets — web_search ~1500/800, small_llm ~3000/1200 — put the charter's
+  penalty term above the maximum achievable quality product, making every
+  expected reward negative and, with the R1 clip, all deposits zero.
+  See docs/diagnosis-log.md D1.)*
 - `advertised(tool|type) = q(tool|type) + seeded_noise` per (tool, type),
-  clipped to [0.05, 1]. **Deliberately misleading on 1–2 (tool, type)
-  pairs**: e.g. `knowledge_base` advertises ~0.9 for `math` (true 0.35) and
-  `vector_db` advertises ~0.85 for `factual` (true 0.70). These are the
-  "ads" the colony must learn to distrust.
+  clipped to [0.05, 1]. **Deliberately misleading on 2 (tool, type)
+  pairs**: `knowledge_base` advertises ~0.9 for `summarization`
+  (true 0.50) and `calculator` advertises ~0.3 for `math` (true 0.98,
+  undersell). These are the "ads" the colony must learn to distrust.
+  *(Amended 2026-09-15, D2: the original pairs — kb→math 0.90,
+  vd→factual 0.85 — were chosen against the quality landscape and
+  accidentally advertised the reward-optimal math path. See
+  docs/diagnosis-log.md D2.)*
 - `call(tool, query, rng)` → `(quality, cost, latency)`, where
   `quality = q(tool|type) + per-call seeded noise (σ=0.05, clipped [0,1])`.
   Deterministic given (tool, query, seed). Sabotage (M6.6) is a runtime
@@ -163,3 +171,20 @@ Human approves this doc (or requests changes). Then: commit, tag `m6.1`.
 **Status: APPROVED 2026-09-15.** All design risks resolved: R1 (deposit
 clip ≥0), R3 (shared τ), R6 (per-query deposit, batch evaporation). R2, R4,
 R5 stay as watch-items logged via diagnosis-log.md during the build.
+
+## Amendments after approval
+
+- **2026-09-15 (during M6.3 build):** two corrections to M6.2 constants,
+  both flagged in docs/diagnosis-log.md rather than silently patched:
+  - **D1 — cost/latency rescale.** The original magnitude targets made the
+    charter's penalty term (λ=1, /1e4 tokens, /1e3 ms) exceed the maximum
+    achievable quality product on every path; with the R1 deposit clip the
+    colony could never learn. Costs/latencies rescaled ~5–10× down; the
+    reward formula itself is untouched (charter-specified).
+  - **D2 — misleading-ad re-targeting.** The original misleading pairs
+    pointed at (or near) the reward-optimal path, so greedy-advertised was
+    never actually misled. Re-targeted to knowledge_base→summarization
+    (oversell) and calculator→math (undersell); greedy-advertised now
+    visibly loses on math (≈ −0.03 vs +0.30) and summarization
+    (+0.25 vs +0.49).
+  Human may veto either amendment; revert would be a clean `git revert`.
