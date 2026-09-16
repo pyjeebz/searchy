@@ -33,7 +33,14 @@ tag per milestone.
       +1.14, and the edge is cost-side (final quality 0.411 is BELOW the
       strawman's 0.429); clause (b) failed hard — router at 48.6% of
       oracle utility. Learning curve flat from query ~5. Nothing tuned)
-- [ ] [agent] M6.6 sabotage demo (money plot + GIF)
+- [x] [agent] M6.6 sabotage demo (money plot + GIF) (**DONE 2026-09-16**,
+      tag m6.6 — 75 tests passing. Measured NEGATIVE RESULT (D5): share
+      clause 3/5, recovery 1/5 — DoD NOT MET, nothing tuned. First run's
+      "recovery MET 4/5" was a window-start artifact, caught in review and
+      fixed; the corrected result is strictly worse and honestly reported.
+      Router does adapt (+0.035 post-event vs greedy −0.129) but plateaus
+      at 0.10–0.20 web_search share, short of 90% recovery. See the
+      decision log entry below for the full verdict)
 - [ ] [agent] M6.7 pheromone heatmaps
 - [ ] GATE 1 — 2-min narratable demo + all artifacts
 
@@ -126,3 +133,19 @@ tag per milestone.
   stream, or proceed as-is to M6.6/M6.7 and let Stage 4 (MMAS bounds +
   restarts, M6-RT) fix it — the demo-first bet is that the failure IS
   the demo material.
+- 2026-09-16: M6.6 closed as a measured negative result, plus a caught
+  measurement artifact (D5 in docs/diagnosis-log.md). The sabotage demo
+  ran as specified (event #50, 5 seeds, shared stream, M6.3 parameters
+  verbatim); its first run's recovery clause read MET 4/5 but every pass
+  sat at #50–#51, where the rolling window was still ≥80% pre-event
+  queries — a window-start artifact, not adaptation. After restricting
+  recovery to fully-post-event windows (window-start passes kept
+  visible as n_pass_incl_window_start, regression test added), the
+  verdict is: share clause 3/5 (needs 4; strict 0.20 misses on seeds
+  0/3), recovery clause 1/5 (only seed 1, at #69) — DoD NOT MET,
+  reported honestly, nothing tuned. The router does adapt (post-event
+  +0.035 vs greedy-advertised −0.129; web_search share falls in every
+  seed) but cannot reach 90% of pre-event utility: deposit clip + weak
+  evaporation + lying ads (β=2) + ε floor plateau its share at
+  0.10–0.20. Money plot delivered as PNG + GIF. Complete before-picture
+  for the Stage-4 M6-RT backport (MMAS bounds + restarts).
