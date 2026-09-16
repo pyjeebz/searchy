@@ -17,7 +17,11 @@ tag per milestone.
 - [x] [agent] M6.2 queries.py + tools.py (**DONE 2026-09-15**, tag m6.2 —
       100 seed-deterministic queries, 6 tools with misleading ads,
       18 tests passing)
-- [ ] [agent] M6.3 router.py (ACO core)
+- [x] [agent] M6.3 router.py + reward.py (ACO core) (**DONE 2026-09-15**, tag
+      m6.3 — transition rule τ^α·η^β with ε-exploration, immediate clipped
+      deposit, batch evaporation; 34 tests passing. Build findings logged
+      as D1–D3 in docs/diagnosis-log.md, incl. two corrections to M6.2
+      constants — human review welcome, veto = git revert)
 - [ ] [agent] M6.4 baselines.py
 - [ ] [agent] M6.5 comparison experiment (100 queries × 5 seeds)
 - [ ] [agent] M6.6 sabotage demo (money plot + GIF)
@@ -78,3 +82,17 @@ tag per milestone.
 - 2026-09-15: Git workflow: file-by-file commits with conventional commit
   messages; no milestone IDs in messages. Charter tags (kickoff, m6.1, ...)
   kept, applied after the milestone's commits.
+- 2026-09-15: During the router build two M6.2 constants were corrected,
+  logged as D1/D2 in docs/diagnosis-log.md and amended into the design doc
+  (human may veto; revert is clean): (D1) tool costs/latencies rescaled
+  ~5–10× down — the original magnitudes made every expected reward negative
+  and, with the deposit clip, all deposits zero; (D2) misleading ads
+  re-targeted to knowledge_base→summarization (oversell) and
+  calculator→math (undersell) — the original pairs advertised the
+  reward-optimal path. Charter reward formula (λ=1, /1e4, /1e3) untouched.
+- 2026-09-15: D3 (premature convergence probe: colony freezes near
+  greedy-advertised, calculator never discovered within 100 queries) was
+  logged, not tuned, per working rule 4. It is expected ACO behavior and
+  the before-picture for the Stage-4 MMAS/restart backport. M6.5's
+  beat-greedy DoD will be marginal at current parameters; M6.6 recovery
+  speed is at risk (R4). No parameter changes without human go-ahead.
