@@ -1,0 +1,185 @@
+{
+  "protocol": {
+    "n_queries": 100,
+    "query_seed": 100,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "router_params": {
+      "alpha": 1.0,
+      "beta": 2.0,
+      "rho": 0.05,
+      "epsilon": 0.1,
+      "q": 1.0,
+      "tau0": 1.0,
+      "evaporation_batch": 10
+    },
+    "rolling_window": 10,
+    "sabotage": {
+      "tool": "web_search",
+      "query": 50,
+      "quality": 0.05,
+      "latency_multiplier": 3,
+      "note": "pure environment change: the replacement Tool (same ads, true quality floored, latency multiplied) is swapped into the pool and the router's cached layer list right before this query is routed; no router state is touched"
+    },
+    "note": "one shared query stream; per seed every method runs it with a fresh generator seeded s and a fresh pool (the event mutates the pool); baselines are run as two halves around the swap so greedy-advertised never adapts while the oracle re-picks instantly"
+  },
+  "method_means": [
+    {
+      "method": "pheromone_router",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 10.986592273237266,
+      "cumulative_reward_std": 1.865185492425475,
+      "mean_reward": 0.10986592273237265,
+      "final_quality": 0.3139095231703493,
+      "mean_cost_tokens": 1109.76,
+      "mean_latency_ms": 125.24000000000001
+    },
+    {
+      "method": "greedy-advertised",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 2.0563236670270353,
+      "cumulative_reward_std": 0.330344178764672,
+      "mean_reward": 0.02056323667027035,
+      "final_quality": 0.18995481874565018,
+      "mean_cost_tokens": 1317.5,
+      "mean_latency_ms": 157.55
+    },
+    {
+      "method": "oracle",
+      "n_seeds": 5,
+      "cumulative_reward_mean": 36.352912705408556,
+      "cumulative_reward_std": 0.22946364327562302,
+      "mean_reward": 0.3635291270540855,
+      "final_quality": 0.5013567977361595,
+      "mean_cost_tokens": 723.2,
+      "mean_latency_ms": 71.85
+    }
+  ],
+  "pre_post_mean_reward": {
+    "pheromone_router": {
+      "pre_event": 0.18754653788023887,
+      "post_event": 0.035231606217756097
+    },
+    "greedy-advertised": {
+      "pre_event": 0.17656677762633083,
+      "post_event": -0.12932251836594458
+    },
+    "oracle": {
+      "pre_event": 0.3621621971099242,
+      "post_event": 0.36484245190239734
+    }
+  },
+  "verdict": {
+    "event_query": 50,
+    "window_queries": 30,
+    "rolling_window": 10,
+    "recovery_measured_from_query": 59,
+    "share_clause": {
+      "threshold": 0.2,
+      "n_pass": 3,
+      "required": 4,
+      "met": false
+    },
+    "recovery_clause": {
+      "fraction": 0.9,
+      "n_pass": 1,
+      "required": 4,
+      "met": false,
+      "n_pass_incl_window_start": 4
+    },
+    "seeds_passing_both": 1,
+    "dod_met": false,
+    "per_seed": [
+      {
+        "seed": 0,
+        "pre_event_share": 0.5833333333333333,
+        "share_below_before_event": false,
+        "min_share_in_window": 0.2,
+        "share_pass": false,
+        "first_below_query": null,
+        "pre_baseline": 0.18116649906840132,
+        "recovery_target": 0.1630498491615612,
+        "min_rolling_reward_in_window": -0.1000398421600529,
+        "max_rolling_reward_in_window": 0.09068935091589969,
+        "recovery_pass": false,
+        "recovery_query": null,
+        "recovery_query_incl_window_start": 51,
+        "end_rolling_reward": 0.059103012576878534,
+        "passes_both": false
+      },
+      {
+        "seed": 1,
+        "pre_event_share": 0.5533333333333333,
+        "share_below_before_event": false,
+        "min_share_in_window": 0.1,
+        "share_pass": true,
+        "first_below_query": 69,
+        "pre_baseline": 0.20261330967922445,
+        "recovery_target": 0.18235197871130202,
+        "min_rolling_reward_in_window": -0.060375123238860406,
+        "max_rolling_reward_in_window": 0.222685004294448,
+        "recovery_pass": true,
+        "recovery_query": 69,
+        "recovery_query_incl_window_start": 50,
+        "end_rolling_reward": -0.04860284232551519,
+        "passes_both": true
+      },
+      {
+        "seed": 2,
+        "pre_event_share": 0.2433333333333333,
+        "share_below_before_event": false,
+        "min_share_in_window": 0.1,
+        "share_pass": true,
+        "first_below_query": 79,
+        "pre_baseline": 0.1898241167370896,
+        "recovery_target": 0.17084170506338064,
+        "min_rolling_reward_in_window": -0.04331254269394831,
+        "max_rolling_reward_in_window": 0.1409610174344723,
+        "recovery_pass": false,
+        "recovery_query": null,
+        "recovery_query_incl_window_start": null,
+        "end_rolling_reward": 0.014851748558342518,
+        "passes_both": false
+      },
+      {
+        "seed": 3,
+        "pre_event_share": 0.3633333333333334,
+        "share_below_before_event": false,
+        "min_share_in_window": 0.2,
+        "share_pass": false,
+        "first_below_query": null,
+        "pre_baseline": 0.17922413397208822,
+        "recovery_target": 0.1613017205748794,
+        "min_rolling_reward_in_window": -0.1693346943988099,
+        "max_rolling_reward_in_window": 0.003476368254932602,
+        "recovery_pass": false,
+        "recovery_query": null,
+        "recovery_query_incl_window_start": 51,
+        "end_rolling_reward": 0.03884374013979301,
+        "passes_both": false
+      },
+      {
+        "seed": 4,
+        "pre_event_share": 0.24333333333333332,
+        "share_below_before_event": false,
+        "min_share_in_window": 0.1,
+        "share_pass": true,
+        "first_below_query": 62,
+        "pre_baseline": 0.24979363038448907,
+        "recovery_target": 0.22481426734604015,
+        "min_rolling_reward_in_window": -0.029240420129163412,
+        "max_rolling_reward_in_window": 0.12047222453409687,
+        "recovery_pass": false,
+        "recovery_query": null,
+        "recovery_query_incl_window_start": 51,
+        "end_rolling_reward": 0.11034062428631723,
+        "passes_both": false
+      }
+    ]
+  }
+}
