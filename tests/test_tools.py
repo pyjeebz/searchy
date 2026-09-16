@@ -73,13 +73,14 @@ def test_advertised_within_bounds() -> None:
 
 
 def test_advertised_close_to_true_except_misleading_pairs() -> None:
-    """Honest ads within ~3 sigma of true; the two misleading pairs are not."""
+    """Honest ads within ~4 sigma of true; the two misleading pairs are not."""
     pool = build_tool_pool()
     for tool in pool.values():
         for qtype, true_q in tool.true_quality.items():
             ad = tool.advertised[qtype]
             if (tool.name, qtype) in MISLEADING_ADS:
-                assert ad > true_q + 0.10, f"misleading ad too weak: {tool.name}/{qtype}"
+                # oversell or undersell — either way clearly off from true
+                assert abs(ad - true_q) > 0.10, f"misleading ad too weak: {tool.name}/{qtype}"
                 assert ad == MISLEADING_ADS[(tool.name, qtype)]
             else:
                 assert abs(ad - true_q) <= 4 * AD_NOISE_SIGMA, (
@@ -90,9 +91,11 @@ def test_advertised_close_to_true_except_misleading_pairs() -> None:
 def test_specific_misleading_ads() -> None:
     pool = build_tool_pool()
     kb = pool["knowledge_base"]
-    vd = pool["vector_db"]
-    assert kb.advertised[QueryType.MATH] == 0.90 and kb.true_quality[QueryType.MATH] == 0.35
-    assert vd.advertised[QueryType.FACTUAL] == 0.85 and vd.true_quality[QueryType.FACTUAL] == 0.70
+    calc = pool["calculator"]
+    assert kb.advertised[QueryType.SUMMARIZATION] == 0.90
+    assert kb.true_quality[QueryType.SUMMARIZATION] == 0.50
+    assert calc.advertised[QueryType.MATH] == 0.30
+    assert calc.true_quality[QueryType.MATH] == 0.98
 
 
 def test_best_true_tool_differs_by_type() -> None:
