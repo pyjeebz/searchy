@@ -143,3 +143,61 @@ Format:
   bounds + restarts (M6-RT backport) exist to fix exactly this.
 - Reading trigger: R2.1 (MMAS bounds), R2.2 (ACS exploitation), R1.2;
   direct before-picture for the M6-RT backport.
+
+## D5. M6.6 verdict: the DoD fails — and the first run overstated recovery via a window-start artifact (M6.6 run, 2026-09-16)
+- Observed (artifact first, since it changed a reported number): the
+  first run of the sabotage demo printed the recovery clause as MET 4/5.
+  Inspection of the per-seed pass queries showed all four "passes" at
+  queries #50–#51 — one and two queries after the event — where the
+  trailing 10-query rolling window is 90% and 80% pre-event queries. The
+  rolling mean there still reports mostly pre-sabotage rewards; crediting
+  it as "recovery" is a measurement artifact, not adaptation. Caught
+  during result review, before any conclusion was drawn from it — this
+  is exactly what working rule 4 exists for.
+- Fix (measurement, not model): recovery is now credited only from
+  query #59 onward (= event #50 + rolling window 10 − 1), the first
+  query whose trailing 10-window lies entirely in the post-event half.
+  Window-start passes are still computed and reported separately as
+  `recovery_clause.n_pass_incl_window_start` so the artifact stays
+  visible in every future summary instead of vanishing. Validation also
+  rejects a rolling_window larger than the DoD adaptation window (there
+  would be no fully-post-event index at all). Regression test:
+  tests/test_sabotage.py::test_window_start_pass_excluded_before_damage_arrives.
+- Corrected honest verdict (5 seeds, shared stream, M6.3 parameters
+  verbatim, event #50: web_search true quality → 0.05, latency ×3, ads
+  unchanged): share clause 3/5 NOT MET (required 4; seeds 0 and 3 bottom
+  out at exactly 0.20 and the clause is strict); recovery clause 1/5 NOT
+  MET (required 4; only seed 1, at #69); DoD NOT MET on the conjunction.
+  With the artifact left in, recovery would have read 4/5 MET — the fix
+  makes the result strictly worse, and that is the honest direction.
+  Per-seed end-of-window rolling rewards +0.059, −0.049, +0.015, +0.039,
+  +0.110 against recovery targets 0.163–0.225.
+- Mechanism (why recovery genuinely fails): web_search's Layer-1 share
+  plateaus at ~0.10–0.20 instead of collapsing toward 0, and utility
+  stays far below the pre-event level (steady-state rolling ≈ +0.08 vs
+  pre-event ≈ +0.17, target 0.9×). Three compounding causes, all visible
+  in the code: (a) the R1 deposit clip — bad picks deposit 0 but are
+  never punished, so τ_web_search can only decay via evaporation (×0.95
+  per 10-query batch → ≈0.77 over the 50-query post-event half), (b) the
+  lying ads keep β=2 amplifying web_search's advertised 0.95 every step,
+  and (c) ε=0.1 exploration keeps re-feeding it ≈3.3% of Layer-1
+  traffic. The colony cannot actively unlearn a once-popular tool —
+  D3/D4's lock-in mechanism under a harder test.
+- What the demo does show honestly: the router is the only learner in
+  the pool. Post-event mean reward +0.035 vs greedy-advertised −0.129;
+  per-seed pre-event web_search share 0.58/0.55/0.24/0.36/0.24 falls to
+  a window minimum of 0.20/0.10/0.10/0.20/0.10 — real traffic moved off
+  the sabotaged tool in every seed — but real-but-insufficient
+  adaptation is the finding, not a pass. The oracle re-picks instantly
+  (+0.365 post-event); greedy-advertised walks into the sabotage on
+  every factual query. Money plot produced as required (PNG + GIF at
+  experiments/results/figures/), showing share collapse + reward dip
+  despite the failed clauses.
+- Action: reported as a measured negative result; NOTHING tuned (working
+  rule 4). Both ROADMAP clauses fail; the honest-negative path is taken.
+  Reinforces D3/D4 and sharpens the Stage-4 M6-RT backport: with MMAS
+  pheromone bounds, lying ads could not prop up a collapsed tool; with
+  restarts the colony could escape the plateau. No changes to M6.7
+  (heatmaps are purely descriptive).
+- Reading trigger: R2.1 (MMAS bounds), R2.2 (ACS exploitation), R1.2, R4;
+  direct before-picture for the M6-RT backport.
