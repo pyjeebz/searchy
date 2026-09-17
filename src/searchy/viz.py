@@ -1,7 +1,7 @@
 """Plots for the comparison experiments.
 
-Implements M6.5 (convergence plot) and M6.6 (the sabotage money plot,
-static PNG + animated GIF). M6.7 will add the pheromone heatmaps.
+Implements M6.5 (convergence plot), M6.6 (the sabotage money plot, static
+PNG + animated GIF), and M6.7 (the pheromone heatmap panels).
 
 Non-interactive Agg backend throughout: figures are written to files,
 never shown.
@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Sequence
+
+import numpy as np
 
 import matplotlib
 
@@ -309,4 +311,80 @@ def money_gif(
     )
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     animation.save(out_path, writer=PillowWriter(fps=fps), dpi=100)
+    plt.close(fig)
+
+
+def heatmap_panels(
+    panels: Sequence[tuple[str, np.ndarray]],
+    row_labels: Sequence[str],
+    col_labels: Sequence[str],
+    *,
+    out_path: str,
+    title: str,
+    value_label: str,
+    ncols: int = 2,
+    vmin: float | None = None,
+    vmax: float | None = None,
+    fmt: str = "{:.2f}",
+    cmap: str = "viridis",
+) -> None:
+    """A grid of annotated heatmaps sharing one colorbar (M6.7).
+
+    ``panels`` is a sequence of (panel title, 2-D matrix) pairs, drawn left
+    to right / top to bottom. NaN cells are masked and drawn as an em dash.
+    ``vmin``/``vmax`` default to the shared data range so every panel is
+    comparable at a glance; pass them explicitly to pin a known range.
+    """
+    matrices = [np.asarray(matrix, dtype=float) for _, matrix in panels]
+    n_panels = len(panels)
+    ncols = max(1, min(ncols, n_panels))
+    nrows = (n_panels + ncols - 1) // ncols
+
+    finite = [matrix[~np.isnan(matrix)] for matrix in matrices if np.isfinite(matrix).any()]
+    data_lo = float(min(values.min() for values in finite)) if finite else 0.0
+    data_hi = float(max(values.max() for values in finite)) if finite else 1.0
+    lo = data_lo if vmin is None else vmin
+    hi = data_hi if vmax is None else vmax
+    span = (hi - lo) or 1.0
+
+    panel_size = (3.2, 2.8)
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(panel_size[0] * ncols + 1.4, panel_size[1] * nrows + 1.1),
+        squeeze=False,
+    )
+    images = []
+    for ax, (panel_title, matrix) in zip(axes.ravel(), panels):
+        data = np.ma.masked_invalid(matrix)
+        images.append(ax.imshow(data, cmap=cmap, vmin=lo, vmax=hi, aspect="auto"))
+        ax.set_xticks(range(len(col_labels)))
+        ax.set_xticklabels(col_labels, fontsize=8, rotation=20, ha="right")
+        ax.set_yticks(range(len(row_labels)))
+        ax.set_yticklabels(row_labels, fontsize=8)
+        ax.set_title(panel_title, fontsize=10)
+        for row_index, row in enumerate(data):
+            for col_index, value in enumerate(row):
+                if np.ma.is_masked(value):
+                    text, color = "—", "0.5"
+                else:
+                    value = float(value)
+                    text = fmt.format(value)
+                    # white text on the dark end of viridis, black on bright
+                    color = "black" if (value - lo) / span > 0.55 else "white"
+                ax.text(
+                    col_index, row_index, text,
+                    ha="center", va="center", fontsize=8, color=color,
+                )
+    for ax in axes.ravel()[n_panels:]:
+        ax.set_visible(False)
+
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.93))
+    # colorbar after layout: a bar spanning all axes is incompatible with
+    # tight_layout and would trigger a UserWarning if created first
+    colorbar = fig.colorbar(images[0], ax=axes.ravel().tolist(), fraction=0.045, pad=0.02)
+    colorbar.set_label(value_label, fontsize=9)
+    fig.suptitle(title, fontsize=12)
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
