@@ -1,0 +1,793 @@
+{
+  "protocol": {
+    "n_queries": 100,
+    "query_seed": 100,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "snapshot_queries": [
+      25,
+      50,
+      75,
+      100
+    ],
+    "router_params": {
+      "alpha": 1.0,
+      "beta": 2.0,
+      "rho": 0.05,
+      "epsilon": 0.1,
+      "q": 1.0,
+      "tau0": 1.0,
+      "evaporation_batch": 10
+    },
+    "note": "descriptive, zero tuning: the same shared query stream and router parameters as M6.5/M6.6, verbatim; a snapshot is tau right after that query (deposit and any batch evaporation applied); R3 \u2014 tau is one shared matrix, so the per-type split in the figures comes from eta via the effective routing probabilities (tau^alpha * eta^beta), shown next to the realized per-type traffic shares"
+  },
+  "mean_effective_probabilities": {
+    "25": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.32303646080246945,
+          "vector_db": 0.24661941148258554,
+          "web_search": 0.430344127714945
+        },
+        "math-calculation": {
+          "knowledge_base": 0.2924379129488085,
+          "vector_db": 0.41243215095456265,
+          "web_search": 0.29512993609662885
+        },
+        "text-summarization": {
+          "knowledge_base": 0.4187278229814072,
+          "vector_db": 0.33970879559850836,
+          "web_search": 0.24156338142008452
+        },
+        "code-snippet": {
+          "knowledge_base": 0.16891073797226253,
+          "vector_db": 0.4027101182452418,
+          "web_search": 0.42837914378249564
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.0069352747180162514,
+          "regex_processor": 0.06751449686513813,
+          "small_llm": 0.9255502284168455
+        },
+        "math-calculation": {
+          "calculator": 0.054572628995267325,
+          "regex_processor": 0.11855420875111729,
+          "small_llm": 0.8268731622536153
+        },
+        "text-summarization": {
+          "calculator": 0.0006385751971011939,
+          "regex_processor": 0.032601526596142225,
+          "small_llm": 0.9667598982067565
+        },
+        "code-snippet": {
+          "calculator": 0.017525418265944552,
+          "regex_processor": 0.17558861139577517,
+          "small_llm": 0.8068859703382802
+        }
+      }
+    },
+    "50": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.31501353379338626,
+          "vector_db": 0.2383297118309687,
+          "web_search": 0.4466567543756451
+        },
+        "math-calculation": {
+          "knowledge_base": 0.2921273300453264,
+          "vector_db": 0.39777029576369743,
+          "web_search": 0.3101023741909761
+        },
+        "text-summarization": {
+          "knowledge_base": 0.41449637930818223,
+          "vector_db": 0.3316631207296014,
+          "web_search": 0.25384049996221636
+        },
+        "code-snippet": {
+          "knowledge_base": 0.1685119572283931,
+          "vector_db": 0.3837199287085513,
+          "web_search": 0.44776811406305567
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.0037929809881480786,
+          "regex_processor": 0.04194850396720352,
+          "small_llm": 0.9542585150446483
+        },
+        "math-calculation": {
+          "calculator": 0.03125733919083083,
+          "regex_processor": 0.07714701537089982,
+          "small_llm": 0.8915956454382693
+        },
+        "text-summarization": {
+          "calculator": 0.0003430257173398316,
+          "regex_processor": 0.019900385343966008,
+          "small_llm": 0.9797565889386941
+        },
+        "code-snippet": {
+          "calculator": 0.010103073428403853,
+          "regex_processor": 0.11488594454563747,
+          "small_llm": 0.8750109820259585
+        }
+      }
+    },
+    "75": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.34773064205950927,
+          "vector_db": 0.21881305592620795,
+          "web_search": 0.4334563020142828
+        },
+        "math-calculation": {
+          "knowledge_base": 0.3246527267923164,
+          "vector_db": 0.37280004448031884,
+          "web_search": 0.30254722872736484
+        },
+        "text-summarization": {
+          "knowledge_base": 0.4538006568956927,
+          "vector_db": 0.30347390030744925,
+          "web_search": 0.242725442796858
+        },
+        "code-snippet": {
+          "knowledge_base": 0.1896369663703133,
+          "vector_db": 0.3649718452765624,
+          "web_search": 0.44539118835312425
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.0028801367434113396,
+          "regex_processor": 0.038009326750644626,
+          "small_llm": 0.9591105365059441
+        },
+        "math-calculation": {
+          "calculator": 0.024030622279558482,
+          "regex_processor": 0.07074855345561987,
+          "small_llm": 0.9052208242648216
+        },
+        "text-summarization": {
+          "calculator": 0.00025945575098024843,
+          "regex_processor": 0.01796413038044602,
+          "small_llm": 0.9817764138685737
+        },
+        "code-snippet": {
+          "calculator": 0.007759797917026861,
+          "regex_processor": 0.1052302903080593,
+          "small_llm": 0.8870099117749138
+        }
+      }
+    },
+    "100": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.3615298186655502,
+          "vector_db": 0.22163369354305185,
+          "web_search": 0.4168364877913978
+        },
+        "math-calculation": {
+          "knowledge_base": 0.3342224975808191,
+          "vector_db": 0.37706897584877697,
+          "web_search": 0.28870852657040386
+        },
+        "text-summarization": {
+          "knowledge_base": 0.4659301654069816,
+          "vector_db": 0.3039046033941361,
+          "web_search": 0.23016523119888238
+        },
+        "code-snippet": {
+          "knowledge_base": 0.19660181973549842,
+          "vector_db": 0.3735125134224222,
+          "web_search": 0.4298856668420794
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.002113744972211504,
+          "regex_processor": 0.03190498829324631,
+          "small_llm": 0.9659812667345422
+        },
+        "math-calculation": {
+          "calculator": 0.01784060994199474,
+          "regex_processor": 0.06010100695890079,
+          "small_llm": 0.9220583830991045
+        },
+        "text-summarization": {
+          "calculator": 0.0001896473619889542,
+          "regex_processor": 0.015011148753969342,
+          "small_llm": 0.9847992038840416
+        },
+        "code-snippet": {
+          "calculator": 0.00576626973416842,
+          "regex_processor": 0.08958373717737342,
+          "small_llm": 0.9046499930884581
+        }
+      }
+    }
+  },
+  "mean_traffic_shares": {
+    "25": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.4,
+          "vector_db": 0.22857142857142856,
+          "web_search": 0.37142857142857133
+        },
+        "math-calculation": {
+          "knowledge_base": 0.17142857142857143,
+          "vector_db": 0.5714285714285714,
+          "web_search": 0.2571428571428571
+        },
+        "text-summarization": {
+          "knowledge_base": 0.45,
+          "vector_db": 0.25,
+          "web_search": 0.3
+        },
+        "code-snippet": {
+          "knowledge_base": 0.2,
+          "vector_db": 0.3714285714285714,
+          "web_search": 0.42857142857142866
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.02857142857142857,
+          "regex_processor": 0.11428571428571428,
+          "small_llm": 0.8571428571428571
+        },
+        "math-calculation": {
+          "calculator": 0.17142857142857143,
+          "regex_processor": 0.14285714285714285,
+          "small_llm": 0.6857142857142857
+        },
+        "text-summarization": {
+          "calculator": 0.0,
+          "regex_processor": 0.1,
+          "small_llm": 0.9
+        },
+        "code-snippet": {
+          "calculator": 0.02857142857142857,
+          "regex_processor": 0.17142857142857143,
+          "small_llm": 0.8
+        }
+      }
+    },
+    "50": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.31999999999999995,
+          "vector_db": 0.24000000000000005,
+          "web_search": 0.43999999999999995
+        },
+        "math-calculation": {
+          "knowledge_base": 0.23636363636363633,
+          "vector_db": 0.509090909090909,
+          "web_search": 0.2545454545454545
+        },
+        "text-summarization": {
+          "knowledge_base": 0.4166666666666667,
+          "vector_db": 0.23333333333333334,
+          "web_search": 0.35000000000000003
+        },
+        "code-snippet": {
+          "knowledge_base": 0.2,
+          "vector_db": 0.3666666666666667,
+          "web_search": 0.4333333333333333
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.04,
+          "regex_processor": 0.06666666666666667,
+          "small_llm": 0.8933333333333333
+        },
+        "math-calculation": {
+          "calculator": 0.14545454545454545,
+          "regex_processor": 0.10909090909090909,
+          "small_llm": 0.7454545454545455
+        },
+        "text-summarization": {
+          "calculator": 0.0,
+          "regex_processor": 0.1,
+          "small_llm": 0.9
+        },
+        "code-snippet": {
+          "calculator": 0.016666666666666666,
+          "regex_processor": 0.16666666666666666,
+          "small_llm": 0.8166666666666668
+        }
+      }
+    },
+    "75": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.36,
+          "vector_db": 0.22000000000000003,
+          "web_search": 0.41999999999999993
+        },
+        "math-calculation": {
+          "knowledge_base": 0.2947368421052632,
+          "vector_db": 0.4631578947368421,
+          "web_search": 0.24210526315789468
+        },
+        "text-summarization": {
+          "knowledge_base": 0.47777777777777775,
+          "vector_db": 0.2,
+          "web_search": 0.32222222222222224
+        },
+        "code-snippet": {
+          "knowledge_base": 0.17777777777777776,
+          "vector_db": 0.3444444444444444,
+          "web_search": 0.47777777777777775
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.05,
+          "regex_processor": 0.08,
+          "small_llm": 0.8699999999999999
+        },
+        "math-calculation": {
+          "calculator": 0.10526315789473684,
+          "regex_processor": 0.13684210526315788,
+          "small_llm": 0.7578947368421052
+        },
+        "text-summarization": {
+          "calculator": 0.01111111111111111,
+          "regex_processor": 0.07777777777777778,
+          "small_llm": 0.9111111111111111
+        },
+        "code-snippet": {
+          "calculator": 0.03333333333333333,
+          "regex_processor": 0.16666666666666666,
+          "small_llm": 0.8
+        }
+      }
+    },
+    "100": {
+      "retrieve": {
+        "factual-lookup": {
+          "knowledge_base": 0.368,
+          "vector_db": 0.24,
+          "web_search": 0.392
+        },
+        "math-calculation": {
+          "knowledge_base": 0.30400000000000005,
+          "vector_db": 0.45600000000000007,
+          "web_search": 0.24000000000000005
+        },
+        "text-summarization": {
+          "knowledge_base": 0.504,
+          "vector_db": 0.192,
+          "web_search": 0.304
+        },
+        "code-snippet": {
+          "knowledge_base": 0.176,
+          "vector_db": 0.32,
+          "web_search": 0.504
+        }
+      },
+      "process": {
+        "factual-lookup": {
+          "calculator": 0.048,
+          "regex_processor": 0.08,
+          "small_llm": 0.8719999999999999
+        },
+        "math-calculation": {
+          "calculator": 0.088,
+          "regex_processor": 0.144,
+          "small_llm": 0.768
+        },
+        "text-summarization": {
+          "calculator": 0.016,
+          "regex_processor": 0.05600000000000001,
+          "small_llm": 0.9279999999999999
+        },
+        "code-snippet": {
+          "calculator": 0.024,
+          "regex_processor": 0.152,
+          "small_llm": 0.8240000000000001
+        }
+      }
+    }
+  },
+  "mean_tau": {
+    "25": {
+      "retrieve": [
+        2.0577143953407884,
+        2.6586918983097183,
+        2.4861541453315033
+      ],
+      "process": [
+        1.125078643465628,
+        1.4912818679796271,
+        4.586199927536754
+      ]
+    },
+    "50": {
+      "retrieve": [
+        3.0780355337308936,
+        3.9452528550663657,
+        3.9615936321175482
+      ],
+      "process": [
+        1.0746730042301746,
+        1.6090761969625014,
+        8.301132819722133
+      ]
+    },
+    "75": {
+      "retrieve": [
+        4.339708710566173,
+        4.644181469917165,
+        4.9257725040778775
+      ],
+      "process": [
+        1.0844872238797192,
+        1.9332381415997255,
+        10.891937319081773
+      ]
+    },
+    "100": {
+      "retrieve": [
+        5.297509707759144,
+        5.549878135908675,
+        5.548879084596757
+      ],
+      "process": [
+        0.9724330377379845,
+        1.9982019907379538,
+        13.425631899788641
+      ]
+    }
+  },
+  "type_separation": {
+    "25": {
+      "retrieve": {
+        "argmax_by_type": {
+          "factual-lookup": "web_search",
+          "math-calculation": "vector_db",
+          "text-summarization": "knowledge_base",
+          "code-snippet": "web_search"
+        },
+        "tv_probabilities": 0.1658127394719771,
+        "tv_shares": 0.3428571428571428
+      },
+      "process": {
+        "argmax_by_type": {
+          "factual-lookup": "small_llm",
+          "math-calculation": "small_llm",
+          "text-summarization": "small_llm",
+          "code-snippet": "small_llm"
+        },
+        "tv_probabilities": 0.09867706616323024,
+        "tv_shares": 0.1714285714285714
+      }
+    },
+    "50": {
+      "retrieve": {
+        "argmax_by_type": {
+          "factual-lookup": "web_search",
+          "math-calculation": "vector_db",
+          "text-summarization": "knowledge_base",
+          "code-snippet": "web_search"
+        },
+        "tv_probabilities": 0.1594405839327288,
+        "tv_shares": 0.26909090909090905
+      },
+      "process": {
+        "argmax_by_type": {
+          "factual-lookup": "small_llm",
+          "math-calculation": "small_llm",
+          "text-summarization": "small_llm",
+          "code-snippet": "small_llm"
+        },
+        "tv_probabilities": 0.06266286960637904,
+        "tv_shares": 0.14787878787878783
+      }
+    },
+    "75": {
+      "retrieve": {
+        "argmax_by_type": {
+          "factual-lookup": "web_search",
+          "math-calculation": "vector_db",
+          "text-summarization": "knowledge_base",
+          "code-snippet": "web_search"
+        },
+        "tv_probabilities": 0.15398698855411086,
+        "tv_shares": 0.24315789473684207
+      },
+      "process": {
+        "argmax_by_type": {
+          "factual-lookup": "small_llm",
+          "math-calculation": "small_llm",
+          "text-summarization": "small_llm",
+          "code-snippet": "small_llm"
+        },
+        "tv_probabilities": 0.053889712241122434,
+        "tv_shares": 0.11210526315789471
+      }
+    },
+    "100": {
+      "retrieve": {
+        "argmax_by_type": {
+          "factual-lookup": "web_search",
+          "math-calculation": "vector_db",
+          "text-summarization": "knowledge_base",
+          "code-snippet": "web_search"
+        },
+        "tv_probabilities": 0.15543528230572506,
+        "tv_shares": 0.216
+      },
+      "process": {
+        "argmax_by_type": {
+          "factual-lookup": "small_llm",
+          "math-calculation": "small_llm",
+          "text-summarization": "small_llm",
+          "code-snippet": "small_llm"
+        },
+        "tv_probabilities": 0.04392288363543772,
+        "tv_shares": 0.10399999999999993
+      }
+    }
+  },
+  "per_seed_tau": {
+    "0": {
+      "25": {
+        "retrieve": [
+          1.5854765661612504,
+          2.6236164326707403,
+          2.795881222229122
+        ],
+        "process": [
+          1.0390647016856753,
+          1.7410244000905224,
+          4.224885119284914
+        ]
+      },
+      "50": {
+        "retrieve": [
+          2.2762045930377317,
+          3.3717878287163976,
+          4.806923498714174
+        ],
+        "process": [
+          0.8938082979592695,
+          2.0713131548415027,
+          7.489794467667532
+        ]
+      },
+      "75": {
+        "retrieve": [
+          3.33036257121197,
+          4.003006660603507,
+          6.083183130449678
+        ],
+        "process": [
+          0.8066619889082406,
+          2.3602514680142135,
+          10.249638905342703
+        ]
+      },
+      "100": {
+        "retrieve": [
+          3.7776354990224608,
+          5.263686734628209,
+          7.23353568080678
+        ],
+        "process": [
+          0.9047158435607551,
+          2.4857059838575344,
+          12.884436087039159
+        ]
+      }
+    },
+    "1": {
+      "25": {
+        "retrieve": [
+          2.0121531487743956,
+          1.7504990897781445,
+          3.628671272407548
+        ],
+        "process": [
+          1.0318257492934875,
+          1.2203574724590778,
+          5.139140289207521
+        ]
+      },
+      "50": {
+        "retrieve": [
+          3.108132130053849,
+          2.717304088368892,
+          5.410327343414793
+        ],
+        "process": [
+          1.1847368393323117,
+          1.4407353685581954,
+          8.610291353947026
+        ]
+      },
+      "75": {
+        "retrieve": [
+          4.237849201042902,
+          4.454525087813558,
+          6.133936812976248
+        ],
+        "process": [
+          1.2830580137179415,
+          2.2413244563158545,
+          11.301928631798912
+        ]
+      },
+      "100": {
+        "retrieve": [
+          5.802270223738437,
+          5.473187264926772,
+          6.146759400650369
+        ],
+        "process": [
+          1.1000618645114197,
+          1.9216555557338055,
+          14.400499469070358
+        ]
+      }
+    },
+    "2": {
+      "25": {
+        "retrieve": [
+          2.184281999178806,
+          2.535941510887412,
+          2.1959694550978623
+        ],
+        "process": [
+          1.3181802462448426,
+          1.5181624311555506,
+          4.079850287763688
+        ]
+      },
+      "50": {
+        "retrieve": [
+          3.4995220948488965,
+          3.7372302148198537,
+          3.0250474754076024
+        ],
+        "process": [
+          1.1301747886241718,
+          1.6895814315220579,
+          7.442043564930125
+        ]
+      },
+      "75": {
+        "retrieve": [
+          5.414505519184754,
+          3.772400560235183,
+          3.7662009071231997
+        ],
+        "process": [
+          1.019982746733315,
+          1.9504959240460114,
+          9.98262831576381
+        ]
+      },
+      "100": {
+        "retrieve": [
+          5.585315299473847,
+          4.748806910519068,
+          4.78156281440113
+        ],
+        "process": [
+          0.8745077074804757,
+          1.6723064428789487,
+          12.568870874034625
+        ]
+      }
+    },
+    "3": {
+      "25": {
+        "retrieve": [
+          2.8283970757750265,
+          3.1149226350064323,
+          1.8354636189505156
+        ],
+        "process": [
+          1.3167064350444466,
+          1.8177997304630547,
+          4.644277164224474
+        ]
+      },
+      "50": {
+        "retrieve": [
+          4.517040364654453,
+          3.197118325263847,
+          3.390851619173664
+        ],
+        "process": [
+          1.3761892543070706,
+          1.6197057572662967,
+          8.109115297518596
+        ]
+      },
+      "75": {
+        "retrieve": [
+          5.399555629134921,
+          3.771157529047954,
+          4.984876365689638
+        ],
+        "process": [
+          1.3311488805797622,
+          1.5488419967995393,
+          11.275598646493215
+        ]
+      },
+      "100": {
+        "retrieve": [
+          6.47598344806092,
+          4.212212607502762,
+          5.637779224925524
+        ],
+        "process": [
+          1.1412937714870732,
+          1.7650160694322126,
+          13.419665439569927
+        ]
+      }
+    },
+    "4": {
+      "25": {
+        "retrieve": [
+          1.6782631868144633,
+          3.2684798232058614,
+          1.9747851579724685
+        ],
+        "process": [
+          0.919616085059688,
+          1.15906530572993,
+          4.842846777203176
+        ]
+      },
+      "50": {
+        "retrieve": [
+          1.9892784860595376,
+          6.702823818162837,
+          3.17481822387751
+        ],
+        "process": [
+          0.7884558409280499,
+          1.2240452726244553,
+          9.854419414547383
+        ]
+      },
+      "75": {
+        "retrieve": [
+          3.3162706322563134,
+          7.219817511885622,
+          3.6606653041506227
+        ],
+        "process": [
+          0.9815844894593367,
+          1.565276862823008,
+          11.64989209601022
+        ]
+      },
+      "100": {
+        "retrieve": [
+          4.846344068500054,
+          8.051497161966566,
+          3.9447583021999804
+        ],
+        "process": [
+          0.8415860016501988,
+          2.1463259017872685,
+          13.854687629229142
+        ]
+      }
+    }
+  }
+}
