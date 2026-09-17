@@ -1,0 +1,38 @@
+# M6.7 — pheromone heatmaps (descriptive, zero tuning)
+#
+# ROADMAP M6.7 DoD: "tau heatmaps per layer at queries 25 / 50 / 75 / 100,
+# split by query type; math queries visibly route differently from factual
+# queries. Save PNGs."
+#
+# There is one shared 2x3 tau matrix (design ruling R3), so the per-type
+# split in the figures is the effective routing probability tau^alpha *
+# eta^beta — exactly the router's transition rule — shown next to the
+# realized per-type traffic shares; raw tau per snapshot is in the CSVs and
+# summary JSON.
+#
+# Purely descriptive (see the diagnosis log, D3/D5): the same shared query
+# stream and router parameters as M6.5/M6.6, verbatim; plain stream, no
+# sabotage event; five seeds. A snapshot is tau right after that query
+# (its deposit and any batch evaporation applied).
+
+name: m6.7-heatmaps
+n_per_type: 25
+query_seed: 100
+seeds: [0, 1, 2, 3, 4]
+snapshot_queries: [25, 50, 75, 100]
+
+router:
+  alpha: 1.0
+  beta: 2.0
+  rho: 0.05
+  epsilon: 0.1
+  q: 1.0
+  tau0: 1.0
+  evaporation_batch: 10
+
+output_dir: experiments/results/m6.7-heatmaps
+figure_retrieve: experiments/results/figures/m6.7-heatmaps-retrieve.png
+figure_process: experiments/results/figures/m6.7-heatmaps-process.png
+figure_shares_retrieve: experiments/results/figures/m6.7-heatmaps-shares-retrieve.png
+figure_shares_process: experiments/results/figures/m6.7-heatmaps-shares-process.png
+figure_tau: experiments/results/figures/m6.7-tau.png
