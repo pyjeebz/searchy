@@ -6,11 +6,9 @@ learning), *then* read the ACO literature as diagnosis of what was observed,
 verify claims on canonical TSP benchmarks, prove improvements, and publish 5
 blog posts in demo-first order.
 
-- **Plan / source of truth:** `ROADMAP.md`
-- **Status:** `PROGRESS.md`
-- **Conventions:** `CLAUDE.md`
-- **Docs:** `docs/primer.md` (R0.1), `docs/design-searchy.md` (M6.1),
-  `docs/diagnosis-log.md` (observed-weirdness log)
+- **Plan, status, conventions, and docs:** live in Notion, under the project
+  page "🐜 ACO Learning + Research Project" (roadmap, progress tracker,
+  project conventions, R0.1 primer, design doc, diagnosis log, blog stubs).
 
 ## Layout
 ```
@@ -19,7 +17,6 @@ src/searchy/        queries, tools, router (ACO core), reward, baselines,
 experiments/configs/  experiment YAML configs
 experiments/results/  CSV + JSON results, figures/ subfolder
 tests/              pytest suites
-blog/posts/         blog drafts (human-written)
 data/               TSPLIB instances etc.
 ```
 
