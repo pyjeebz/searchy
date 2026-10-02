@@ -6,9 +6,9 @@ learning), *then* read the ACO literature as diagnosis of what was observed,
 verify claims on canonical TSP benchmarks, prove improvements, and publish 5
 blog posts in demo-first order.
 
-- **Plan, status, conventions, and docs:** live in Notion, under the project
-  page "🐜 ACO Learning + Research Project" (roadmap, progress tracker,
-  project conventions, R0.1 primer, design doc, diagnosis log, blog stubs).
+- **Plan, status, conventions, and docs:** live in this repo — `ROADMAP.md`
+  (charter, single source of truth), `PROGRESS.md`, `CLAUDE.md`,
+  `docs/` (primer, design doc, diagnosis log), `blog/posts/` (stubs).
 
 ## Layout
 ```
