@@ -73,8 +73,11 @@ one commit + tag per milestone.
       best on 3/4 types and the D3 lock-in shows in τ (process small_llm
       13.4 vs ≤2.0). Descriptive by design, no pass/fail verdict
       manufactured; raw τ in CSVs/JSON)
-- [ ] [agent] G6 (GATE 1) — 2-min narratable demo + all artifacts
-      (**NOT-STARTED** — proposed resume point)
+- [x] [agent] G6 (GATE 1) — 2-min narratable demo + all artifacts (**DONE
+      2026-10-02**, tag g6 — docs/demo-script.md: timestamped 2-minute
+      narration over the committed figures (money plot + GIF, convergence,
+      per-type heatmaps); every number cites seeds + protocol; one-command
+      repro per experiment verified byte-for-byte)
 
 ## Stage 2 — Diagnosis-driven reading (Weeks 3–5) — [me]
 Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
@@ -197,3 +200,10 @@ Human credit approval REQUIRED before FO.1. Doc > demo; cut at 2 days.
   FO overlay added, 2-day cap; Track B added; reading trimmed).
   Re-baseline: all Stage 1 code milestones verified DONE (tests 87/87,
   experiments reproduce byte-for-byte); G6 open; Stages 2–6 not started.
+- 2026-10-02: G6 closed (tag g6). Stage 1 COMPLETE. The demo package is
+  docs/demo-script.md — a timestamped 2-minute narration citing only
+  committed, seed-counted numbers, over the existing figures (no new
+  experiments, no new figures; all figures verified byte-identical on
+  re-run). Stage 1's honest record: M6.5 split negative, M6.6 negative,
+  M6.7 descriptive — the failures are logged and are the Stage-2 reading
+  triggers and Stage-4 before-pictures, per the demo-first bet.
