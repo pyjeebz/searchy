@@ -9,7 +9,13 @@ from __future__ import annotations
 
 import pytest
 
-from searchy.firecrawl import FixtureCall, FixtureStore, FirecrawlOverlay
+from searchy.firecrawl import (
+    FO_QUERY_SET,
+    FixtureCall,
+    FixtureStore,
+    FirecrawlOverlay,
+    registry_tools,
+)
 
 
 def _fake_live(endpoint, params):
@@ -87,3 +93,26 @@ def test_replay_never_calls_live(tmp_path):
     )
     assert rep.live_call is None
     assert rep.call("/search", {"q": "y"}).response["content"] == "ok"
+
+
+# --- FO.2/FO.3: registry + query set invariants ---
+
+
+def test_registry_covers_both_layers():
+    rows = registry_tools()
+    layers = {layer for _, layer, _ in rows}
+    assert layers == {0, 1}
+    # every row carries published credits + advertised skills per type
+    types = {"docs", "news", "product", "factual"}
+    for endpoint, layer, meta in rows:
+        assert meta["credits"] == 1.0
+        assert types <= {k.removeprefix("ads_") for k in meta}
+
+
+def test_query_set_sizes_and_types():
+    from collections import Counter
+
+    by_type = Counter(q["type"] for q in FO_QUERY_SET)
+    assert sum(by_type.values()) == 25
+    assert set(by_type) == {"docs-lookup", "news", "structured-product", "general-factual"}
+    assert min(by_type.values()) >= 6

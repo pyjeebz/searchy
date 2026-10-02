@@ -130,3 +130,65 @@ class FirecrawlOverlay:
         )
         self.store.append(call)
         return call
+
+# --- FO.2: tool registry (published per-call credit costs) ---
+# The registry maps the Searchy router's two layers onto real Firecrawl
+# endpoints. "Advertised skill" = what the endpoint's metadata suggests
+# it is good for (the honest analogue of the simulated tools' ads —
+# endpoint docs are marketing too).
+
+FIRECRAWL_REGISTRY: dict[str, dict[str, float]] = {
+    # retrieve layer: where to look first
+    "/search": {"credits": 1.0, "ads_docs": 0.6, "ads_news": 0.9, "ads_product": 0.7, "ads_factual": 0.8},
+    "/map": {"credits": 1.0, "ads_docs": 0.8, "ads_news": 0.3, "ads_product": 0.5, "ads_factual": 0.5},
+    # process layer: what to pull / how to render
+    "/scrape": {"credits": 1.0, "ads_docs": 0.9, "ads_news": 0.8, "ads_product": 0.6, "ads_factual": 0.7},
+}
+
+
+def registry_tools() -> list[tuple[str, int, dict[str, float]]]:
+    """(endpoint, layer, advertised skills) rows for the FO router."""
+    layer_of = {"/search": 0, "/map": 0, "/scrape": 1}
+    out = []
+    for endpoint, meta in FIRECRAWL_REGISTRY.items():
+        out.append((endpoint, layer_of[endpoint], meta))
+    return out
+
+
+# --- FO.3: query set (~25 queries x 4 types; the recording script ---
+# The recording session (human-approved, ONE pass, <=$15) walks this list
+# and records every (endpoint, params) the router's static baselines would
+# call, plus the epsilon-exploration calls the router needs in replay —
+# the fixture set must cover the router's whole reachable action set.
+
+FO_QUERY_SET: list[dict[str, str]] = [
+    # docs-lookup (7): would route /map or /search first, scrape markdown
+    {"type": "docs-lookup", "q": "Firecrawl /search endpoint parameters limit depth"},
+    {"type": "docs-lookup", "q": "Firecrawl API authentication header example"},
+    {"type": "docs-lookup", "q": "Firecrawl /map endpoint max depth option"},
+    {"type": "docs-lookup", "q": "Firecrawl rate limits per plan"},
+    {"type": "docs-lookup", "q": "Firecrawl webhook crawl finished event"},
+    {"type": "docs-lookup", "q": "Firecrawl SDK error codes"},
+    {"type": "docs-lookup", "q": "Firecrawl /extract schema field types"},
+    # news/current (6): /search first
+    {"type": "news", "q": "Firecrawl funding announcement"},
+    {"type": "news", "q": "Mendable Firecrawl latest release notes"},
+    {"type": "news", "q": "web scraping legal news 2026"},
+    {"type": "news", "q": "Firecrawl v2 API changes"},
+    {"type": "news", "q": "open source crawlers comparison 2026"},
+    {"type": "news", "q": "LLM agents web search tools news"},
+    # structured-product (6): /scrape json or product format
+    {"type": "structured-product", "q": "MacBook Air M4 price specs"},
+    {"type": "structured-product", "q": "Sony WH-1000XM6 price"},
+    {"type": "structured-product", "q": "Kindle Paperwhite 12th gen price"},
+    {"type": "structured-product", "q": "Logitech MX Master 4 price"},
+    {"type": "structured-product", "q": "Therabody Theragun price"},
+    {"type": "structured-product", "q": "DJI Mini 5 Pro price specs"},
+    # general-factual (6): /search or /scrape
+    {"type": "general-factual", "q": "population of Lisbon 2026"},
+    {"type": "general-factual", "q": "height of Mount Kilimanjaro"},
+    {"type": "general-factual", "q": "current US Open champion"},
+    {"type": "general-factual", "q": "who wrote Neuromancer"},
+    {"type": "general-factual", "q": "chemical formula of caffeine"},
+    {"type": "general-factual", "q": "distance Earth to Moon km"},
+]
