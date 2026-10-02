@@ -141,7 +141,19 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
       caught it); exponents fixed, regression test added. Pheromone-side
       stagnation (AS's known weakness) is now measurable for M3.5's MMAS
       comparison)
-- [ ] [agent] M3.5 MMAS + restarts — diversity ≠ 0 for 50 consecutive iterations across 500
+- [x] [agent] M3.5 MMAS + restarts (**DONE 2026-10-02**, tag m3.5 —
+      src/searchy/tsp_aco.py: MMAS = AS construction + exactly three
+      changes (iteration-best deposits, Stützle-Hoos [tau_min,tau_max]
+      bounds recomputed from current best, stagnation restart to tau_max
+      after 50 no-improvement iters). DoD MET: diversity ≠ 1 for 50
+      consecutive iterations — measured min diversity 51/51 ants across
+      500 iterations on all 5 eil51 seeds (longest all-same streak 0;
+      restarts fire 6–8× per run as designed). eil51 gaps 5.63–9.39%
+      (mean 7.51%). D7 logged: first-cut MMAS LOSES to plain AS (ρ=0.5)
+      at this budget — suspected τ0=tau_max flat start + missing 2-opt;
+      left for M4-L's equal-budget table to settle, human's R2.1 reading
+      may diagnose. Diversity canonicalization (rotation/reversal-
+      invariant) tested separately)
 - [ ] [agent] M3.6 2-opt refinement + runtime-share measurement
 - [ ] [agent] M4-L runner + metrics + Wilcoxon → ONE table: AS vs MMAS ± 2-opt, 3 instances × 30 seeds, equal construction budget — GATE: one-command reproducibility
 - [ ] [agent] minimal viz: one convergence plot + one pheromone heatmap

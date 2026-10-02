@@ -224,3 +224,31 @@ Format:
 - Reading trigger: none (build defect, caught by ablation); the β=2 vs β=5
   equivalence on the broken build is a cautionary note for Post 4's
   parameter-discipline story.
+
+## D7. Plain AS (rho=0.5) outperforms our first-cut MMAS on eil51 (M3.5 build, 2026-10-02)
+- Observed: MMAS (iteration-best deposits, Stützle-Hoos bounds, ρ=0.02,
+  51 ants × 500 iters) best-tour gaps on eil51 seeds 0–4: 7.51/8.45/9.39/
+  5.63/6.57% (mean 7.51%). Plain AS from M3.1 at only 200 iterations and
+  ρ=0.5 reached e.g. 2.82–7.04% (seed 0: 438 = 2.82%; the strong-evaporation
+  regime keeps AS's unbounded τ from locking in). The literature's ordering
+  (MMAS > AS) is reversed in our first cut.
+- Reproduced: 5 MMAS seeds vs the committed M3.1 AS numbers; same
+  construction rule, same instance, same budget convention (m=n).
+- Suspicion (three candidates, all standard MMAS subtleties): (a) τ0 mode —
+  we initialize τ = tau_max, which with ρ=0.02 and iteration-best deposits
+  gives very flat early pheromone and slow take-off; (b) the tau_min factor
+  0.001·n·tau_max may be too permissive, letting near-zero edges keep
+  non-trivial probability and slowing convergence; (c) 500 iterations of
+  MMAS at ρ=0.02 may simply be a different budget than AS's fast ρ=0.5
+  cycle — MMAS's advantage in the literature is at larger budgets and with
+  2-opt local search (M3.6), which we have not added yet.
+- Action: logged, not tuned — M3.5's DoD is anti-stagnation (MET: diversity
+  min 51/51 across 500 iters, longest diversity==1 streak 0, restarts
+  firing 6–8× per run), not beat-AS. The AS-vs-MMAS comparison belongs to
+  M4-L's equal-budget table (with 2-opt applied to both), where the
+  protocol equalizes iterations × ants and reports Wilcoxon p-values.
+  If MMAS still loses there, that is a finding for Post 4, not a tuning
+  session (working rule 4). Human's R2.1 reading (MMAS) may also
+  diagnose this directly.
+- Reading trigger: R2.1 (MMAS parameter subtleties — τ0 mode, bound ratios,
+  budget interaction); feeds Post 3 ("the literature knew") and Post 4.

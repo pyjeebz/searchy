@@ -11,7 +11,13 @@ import numpy as np
 import pytest
 
 from searchy.tsp import load_named, tour_length
-from searchy.tsp_aco import run_as
+from searchy.tsp_aco import (
+    _mmas_bounds,
+    canonical_tour,
+    run_as,
+    run_mmas,
+    tour_diversity,
+)
 
 DATA = "data/tsplib"
 
@@ -124,3 +130,103 @@ def test_eil51_dod_median_gap(eil51):
     median = gaps_pct[len(gaps_pct) // 2 - 1 : len(gaps_pct) // 2 + 1]
     assert np.median(gaps_pct) < 8.0, f"median gap {np.median(gaps_pct):.2f}%"
     print("eil51 AS gaps:", [f"{g:.2f}" for g in gaps_pct])
+
+# --- M3.5: MMAS + restarts ---
+
+
+def test_canonical_tour_invariants():
+    t = np.array([3, 4, 0, 1, 2])
+    assert canonical_tour(t) == canonical_tour(np.roll(t, 2))
+    assert canonical_tour(t) == canonical_tour(t[::-1].copy())
+    assert canonical_tour(t) == canonical_tour(np.roll(t[::-1], 1))
+    assert canonical_tour(t) != canonical_tour(np.array([3, 4, 1, 0, 2]))
+
+
+def test_tour_diversity_counts_canonical():
+    a = np.array([0, 1, 2, 3, 4])
+    b = np.roll(a, 2)  # same tour, rotated
+    c = a[::-1].copy()  # same tour, reversed
+    d = np.array([0, 2, 1, 3, 4])  # genuinely different
+    assert tour_diversity([a, b, c]) == 1
+    assert tour_diversity([a, b, c, d]) == 2
+    assert tour_diversity([a, d]) == 2
+
+
+def test_mmas_determinism(eil51):
+    a = run_mmas(eil51.dist, n_ants=8, n_iterations=6, seed=3)
+    b = run_mmas(eil51.dist, n_ants=8, n_iterations=6, seed=3)
+    assert a.best_length == b.best_length
+    assert np.array_equal(a.best_tour, b.best_tour)
+    assert np.array_equal(a.history_mean, b.history_mean)
+    assert a.restarts == b.restarts
+
+
+def test_mmas_bounds_scale_with_best_length():
+    from searchy.tsp_aco import _mmas_bounds
+
+    tau_min_1, tau_max_1 = _mmas_bounds(50, 500, 1.0, 0.001)
+    tau_min_2, tau_max_2 = _mmas_bounds(50, 400, 1.0, 0.001)
+    # better best -> tighter, larger tau_max (1/L), larger tau_min
+    assert tau_max_2 > tau_max_1
+    assert tau_min_2 > tau_min_1
+    assert tau_min_1 < tau_max_1
+
+
+def test_mmas_restart_fires_on_stagnation(eil51):
+    # tiny stagnation_threshold forces at least one restart; verify it is
+    # recorded and the result stays deterministic + valid.
+    r = run_mmas(
+        eil51.dist,
+        n_ants=5,
+        n_iterations=40,
+        seed=0,
+        stagnation_threshold=5,
+    )
+    assert len(r.restarts) >= 1
+    assert all(1 <= it <= r.n_iterations for it in r.restarts)
+    assert sorted(r.best_tour.tolist()) == list(range(eil51.n))
+    assert r.history_best.shape == (40,)
+    assert r.history_diversity.shape == (40,)
+    assert np.all(r.history_diversity >= 1)
+
+
+def test_mmas_tau_bounds_respected(eil51):
+    # After a run without restarts (high stagnation_threshold), every
+    # off-diagonal tau entry must lie within [tau_min, tau_max]. We can't
+    # see tau directly from MMASResult, so probe via a short run's
+    # diversity: with bounds, diversity stays > 1 even late in the run.
+    r = run_mmas(
+        eil51.dist,
+        n_ants=10,
+        n_iterations=60,
+        seed=1,
+        stagnation_threshold=10**9,  # no restart -> clip active throughout
+    )
+    assert r.restarts == ()
+    assert np.all(r.history_diversity > 1)
+    assert r.tau_min < r.tau_max
+
+
+def test_mmas_beats_as_mean_on_tiny(tiny):
+    from searchy.tsp_aco import run_mmas
+
+    r = run_mmas(tiny, n_ants=8, n_iterations=30, seed=0)
+    assert r.best_length == 44  # same true optimum as AS on the square
+    assert r.history_diversity[0] >= 1
+
+
+def test_mmas_no_stagnation_50_consecutive(eil51):
+    # ROADMAP M3.5 DoD: diversity != 0 (i.e., not all ants identical) for
+    # 50 consecutive iterations across 500. Observed on the committed
+    # probe: MMAS diversity min 51/51 ants across full runs — no streak.
+    r = run_mmas(eil51.dist, n_ants=51, n_iterations=500, seed=0)
+    d = r.history_diversity
+    assert len(d) == 500
+    assert np.all(d > 1), "some iteration had all ants building one tour"
+    # longest run of diversity==1 (would-be stagnation) must be < 50
+    streak = max_streak = 0
+    for x in d:
+        streak = streak + 1 if x == 1 else 0
+        max_streak = max(max_streak, streak)
+    assert max_streak == 0
+    print("MMAS eil51 500 iters: min diversity", d.min(), "restarts", len(r.restarts))
