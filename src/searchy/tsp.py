@@ -171,3 +171,36 @@ def nearest_neighbor_tour(
         visited[nxt] = True
         current = nxt
     return tour
+
+def two_opt(tour: np.ndarray, dist: np.ndarray) -> np.ndarray:
+    """First-improvement 2-opt on ``tour`` until no improving move exists.
+
+    Implements M3.6 (local refinement; runtime share is measured by the
+    callers, who time construction vs refinement separately). A 2-opt move
+    replaces edges (a,b) and (c,d) with (a,c) and (b,d) by reversing a
+    tour segment; the gain is d(a,b)+d(c,d) − d(a,c) − d(b,d). Deterministic:
+    scans i,j in index order, takes the first positive-gain move, repeats.
+    Returns the improved tour; the input is never modified.
+    """
+    t = np.asarray(tour).copy()
+    n = len(t)
+    d = np.asarray(dist)
+    improved = True
+    while improved:
+        improved = False
+        for i in range(n - 1):
+            a, b = t[i], t[(i + 1) % n]
+            # j > i+1 in segment order; vectorized gain over all j at once
+            js = np.arange(i + 2, n if i > 0 else n - 1)
+            if len(js) == 0:
+                continue
+            cs = t[js]
+            ds = t[(js + 1) % n]
+            gain = int(d[a, b]) + d[cs, ds] - d[a, cs] - d[b, ds]
+            k = int(np.argmax(gain > 0))
+            if gain[k] > 0:
+                j = int(js[k])
+                t[i + 1 : j + 1] = t[i + 1 : j + 1][::-1]
+                improved = True
+                break
+    return t

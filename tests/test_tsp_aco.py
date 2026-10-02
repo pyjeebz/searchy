@@ -15,7 +15,9 @@ from searchy.tsp_aco import (
     _mmas_bounds,
     canonical_tour,
     run_as,
+    run_as_timed,
     run_mmas,
+    run_mmas_timed,
     tour_diversity,
 )
 
@@ -230,3 +232,72 @@ def test_mmas_no_stagnation_50_consecutive(eil51):
         max_streak = max(max_streak, streak)
     assert max_streak == 0
     print("MMAS eil51 500 iters: min diversity", d.min(), "restarts", len(r.restarts))
+
+
+# --- M3.6: 2-opt + runtime share ---
+
+
+def test_two_opt_improves_and_keeps_validity():
+    from searchy.tsp import nearest_neighbor_tour, two_opt, load_named
+
+    i = load_named("eil51", DATA)
+    nn = nearest_neighbor_tour(i.dist, start=0)
+    before = tour_length(nn, i.dist)
+    refined = two_opt(nn, i.dist)
+    after = tour_length(refined, i.dist)
+    assert after <= before
+    assert sorted(refined.tolist()) == list(range(i.n))
+
+
+def test_two_opt_deterministic_and_idempotent():
+    from searchy.tsp import nearest_neighbor_tour, two_opt, load_named
+
+    i = load_named("berlin52", DATA)
+    nn = nearest_neighbor_tour(i.dist, start=3)
+    a = two_opt(nn, i.dist)
+    b = two_opt(nn, i.dist)
+    assert np.array_equal(a, b)
+    c = two_opt(a, i.dist)
+    assert np.array_equal(a, c)
+
+
+def test_run_as_timed_matches_run_as_when_ls_off(eil51):
+    r1, s1, _ = run_as_timed(eil51.dist, n_ants=10, n_iterations=8, seed=5)
+    r2 = run_as(eil51.dist, n_ants=10, n_iterations=8, seed=5)
+    assert r1.best_length == r2.best_length
+    assert np.array_equal(r1.history_best, r2.history_best)
+    assert np.array_equal(r1.history_mean, r2.history_mean)
+    assert s1.local_search_seconds == 0.0
+    assert s1.construction_seconds > 0.0
+
+
+def test_run_mmas_timed_matches_run_mmas_when_ls_off(eil51):
+    r1, s1, _ = run_mmas_timed(eil51.dist, n_ants=10, n_iterations=8, seed=5)
+    r2 = run_mmas(eil51.dist, n_ants=10, n_iterations=8, seed=5)
+    assert r1.best_length == r2.best_length
+    assert r1.restarts == r2.restarts
+    assert s1.local_search_seconds == 0.0
+
+
+def test_local_search_improves_or_matches_and_is_timed(eil51):
+    r0, s0, _ = run_as_timed(eil51.dist, n_ants=8, n_iterations=5, seed=1)
+    r1, s1, _ = run_as_timed(
+        eil51.dist, n_ants=8, n_iterations=5, seed=1, local_search=True
+    )
+    assert r1.best_length <= r0.best_length
+    assert s1.local_search_seconds > 0.0
+    assert sorted(r1.best_tour.tolist()) == list(range(eil51.n))
+
+
+def test_snapshots_captured_at_requested_iterations(eil51):
+    r, s, snaps = run_as_timed(
+        eil51.dist,
+        n_ants=5,
+        n_iterations=10,
+        seed=2,
+        snapshot_iterations=(3, 7),
+    )
+    assert sorted(snaps) == [3, 7]
+    for it, tau in snaps.items():
+        assert tau.shape == (eil51.n, eil51.n)
+        assert np.all(tau >= 0.0)
