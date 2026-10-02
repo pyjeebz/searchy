@@ -1,0 +1,9 @@
+name: m4l-berlin52-as_2opt
+instances: [berlin52]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+method_filter: [as_2opt]
+n_ants: n
+n_iterations: 100
+data_dir: /home/pyjeebz/searchy/data/tsplib
+output_dir: /tmp/opencode/m4l2/out-berlin52
+figure_dir: /tmp/opencode/m4l2/figs

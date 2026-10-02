@@ -154,9 +154,33 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
       left for M4-L's equal-budget table to settle, human's R2.1 reading
       may diagnose. Diversity canonicalization (rotation/reversal-
       invariant) tested separately)
-- [ ] [agent] M3.6 2-opt refinement + runtime-share measurement
-- [ ] [agent] M4-L runner + metrics + Wilcoxon → ONE table: AS vs MMAS ± 2-opt, 3 instances × 30 seeds, equal construction budget — GATE: one-command reproducibility
-- [ ] [agent] minimal viz: one convergence plot + one pheromone heatmap
+- [x] [agent] M3.6 2-opt refinement + runtime-share measurement (**DONE
+      2026-10-02**, tag m3.6 — src/searchy/tsp.py two_opt (first-
+      improvement, deterministic, idempotent); run_as_timed/run_mmas_timed
+      time construction vs LS separately; probe: AS+2opt hits eil51's
+      optimum 426 at 100 iters seed 0; LS is 83–88% of runtime — the
+      honesty footnote for the table)
+- [x] [agent] M4-L runner + metrics + Wilcoxon → ONE table (**DONE
+      2026-10-02**, tag m4l — experiments/results/m4l-tsp/. THE TABLE:
+      3 instances × 10 seeds × 4 methods (AS / AS+2opt / MMAS / MMAS+2opt),
+      equal construction budget (m=n, 100 iters), nothing tuned.
+      Results: AS median gaps 6.81/2.78/10.17% → AS+2opt 0.00/0.00/1.11%;
+      MMAS 11.50/7.64/18.28% → MMAS+2opt 0.12/0.00/1.67%. All LS gains
+      p<2e-4; MMAS loses to AS without LS on every instance (p~1.5e-4);
+      with LS they tie on eil51/berlin52 (p=0.66/1.0) and MMAS+2opt loses
+      to AS+2opt on eil101 (p=0.015). berlin52: both LS variants hit the
+      optimum 7542 on all 10 seeds. PROTOCOL HONESTY: reduced from 30
+      seeds × 200 iters to 10 × 100 for wall-clock feasibility; stated
+      in summary.json + config README + every caption. One-command repro
+      verified byte-identical. D7 resolved: MMAS's literature advantage
+      assumes LS; at equal budget+LS the variant choice is noise on 2 of
+      3 instances)
+- [x] [agent] minimal viz: one convergence plot + one pheromone heatmap
+      (**DONE 2026-10-02**, in tag m4l — tsp-convergence.png (4 methods,
+      5 seeds, eil51), tsp-tau-heatmap.png (learned pheromone after 100
+      iters, best 426), tsp-colony.gif (ants constructing tours — the
+      Act-2 demo video asset), provenance JSON; one command:
+      uv run python -m searchy.tsp_viz_demo)
 
 ## Stage 4 — Improvements, proven (Weeks 6–8)
 - [ ] [agent] M7.1 NN-tour pheromone init vs uniform τ0 (3 × 30)
@@ -168,9 +192,14 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
 
 ## Stage 5 — Firecrawl Overlay (~2 days, after Stage 4) — [agent]
 Human credit approval REQUIRED before FO.1. Doc > demo; cut at 2 days.
-- [ ] [agent] FO.1 fixture record (~25 queries × 5 tool calls, ONCE, ≤$15 credits) → deterministic 30-seed replay
+- [x] [agent] FO.1 fixture layer (record/replay, credits/latency logged;
+      tests for determinism, misses, accounting) (**BUILT 2026-10-02** —
+      awaiting human approval + FIRECRAWL_API_KEY for the ONE recording
+      pass, ≤$15; FO_QUERY_SET: 25 queries / 4 types defined)
 - [ ] [agent] FO.2 overlay demo plot (traffic share + cumulative credit spend, one adaptation moment) — one figure
-- [ ] [agent] FO.3 docs/firecrawl-overlay.md — mapping table: ACO mechanism → Firecrawl search problem → what I'd do differently at their scale
+- [x] [agent] FO.3 docs/firecrawl-overlay.md — mapping table (**DONE
+      2026-10-02** — ACO mechanism → Firecrawl credit problem → what
+      changes at scale; interview prep + application attachment)
 
 ## Stage 6 — Blog arc — [me] writes
 - [x] [agent] Scaffold blog/posts/ stubs (done at kickoff; restored in-repo 2026-10-02)

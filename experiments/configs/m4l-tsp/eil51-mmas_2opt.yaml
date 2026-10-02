@@ -1,0 +1,9 @@
+name: m4l-eil51-mmas_2opt
+instances: [eil51]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+method_filter: [mmas_2opt]
+n_ants: n
+n_iterations: 100
+data_dir: /home/pyjeebz/searchy/data/tsplib
+output_dir: /tmp/opencode/m4l2/out-eil51
+figure_dir: /tmp/opencode/m4l2/figs

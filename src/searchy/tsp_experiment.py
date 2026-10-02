@@ -78,10 +78,17 @@ def run_experiment(config_path: str | Path) -> dict[str, Any]:
     seeds: list[int] = list(cfg["seeds"])
     n_ants_cfg: Any = cfg.get("n_ants", "n")
     n_iterations: int = int(cfg["n_iterations"])
+    method_filter: list[str] | None = cfg.get("method_filter")
     out_dir = Path(cfg["output_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)
     fig_dir = Path(cfg.get("figure_dir", out_dir / "figures"))
     fig_dir.mkdir(parents=True, exist_ok=True)
+
+    methods = (
+        [m for m in METHOD_KEYS if m in set(method_filter)]
+        if method_filter
+        else list(METHOD_KEYS)
+    )
 
     rows: list[dict[str, Any]] = []
     t_start = time.perf_counter()
@@ -94,7 +101,7 @@ def run_experiment(config_path: str | Path) -> dict[str, Any]:
             for s in range(inst.n)
         )
         for seed in seeds:
-            for method in METHOD_KEYS:
+            for method in methods:
                 result, stats, _ = _run_method(
                     method, inst.dist, n_ants, n_iterations, seed
                 )
@@ -125,14 +132,16 @@ def run_experiment(config_path: str | Path) -> dict[str, Any]:
                 )
 
     df = pd.DataFrame(rows)
-    df.to_csv(out_dir / "runs.csv", index=False)
+    runs_name = "runs.csv" if not method_filter else f"runs-{'-'.join(sorted(methods))}.csv"
+    df.to_csv(out_dir / runs_name, index=False)
 
     # --- summary: one table row per (instance, method) + pairwise p-values ---
+    present_labels = {METHOD_LABELS[m] for m in methods}
     summary_rows: list[dict[str, Any]] = []
     for name in instances:
         sub = df[df.instance == name]
         opt = int(sub.known_optimum.iloc[0])
-        for method in METHOD_LABELS.values():
+        for method in present_labels:
             m = sub[sub.method == method]
             gaps = m.gap_percent.values
             summary_rows.append(
@@ -151,10 +160,11 @@ def run_experiment(config_path: str | Path) -> dict[str, Any]:
                     "known_optimum": opt,
                 }
             )
-        # head-to-head p-values on per-seed best lengths
+        # head-to-head p-values on per-seed best lengths (only pairs where
+        # both methods ran in this pass)
         per = {
             meth: sub[sub.method == METHOD_LABELS[meth]].sort_values("seed")
-            for meth in METHOD_KEYS
+            for meth in methods
         }
         pairs = [
             ("as_2opt", "as"),
@@ -163,8 +173,12 @@ def run_experiment(config_path: str | Path) -> dict[str, Any]:
             ("mmas_2opt", "as_2opt"),
         ]
         for a, b in pairs:
+            if a not in per or b not in per:
+                continue
             la = per[a].best_length.values
             lb = per[b].best_length.values
+            if len(la) == 0 or len(lb) == 0:
+                continue
             summary_rows.append(
                 {
                     "instance": name,

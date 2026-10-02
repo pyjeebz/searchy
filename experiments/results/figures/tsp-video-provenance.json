@@ -1,0 +1,21 @@
+{
+ "seed": 0,
+ "instance": "eil51",
+ "colony_gif": {
+  "n_ants": 20,
+  "n_iterations": 80
+ },
+ "convergence": {
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "n_iterations": 100
+ },
+ "heatmap_run": {
+  "best_length": 426
+ }
+}

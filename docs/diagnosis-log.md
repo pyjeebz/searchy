@@ -252,3 +252,26 @@ Format:
   diagnose this directly.
 - Reading trigger: R2.1 (MMAS parameter subtleties — τ0 mode, bound ratios,
   budget interaction); feeds Post 3 ("the literature knew") and Post 4.
+
+## D8. M4-L table: MMAS without local search loses to plain AS on all 3 instances (M4-L, 2026-10-02)
+- Observed: equal-budget table (10 seeds, 100 iters, m=n), no-LS rows:
+  MMAS median gaps 11.50/7.64/18.28% vs AS 6.81/2.78/10.17% (eil51/
+  berlin52/eil101). Wilcoxon: MMAS worse than AS on every instance
+  (p ≈ 1.5e-4 each). With 2-opt applied to every ant tour, the two
+  variants converge (eil51 p=0.66, berlin52 p=1.0 — both hit the optimum
+  on all seeds) except eil101 where AS+2opt stays ahead (p=0.015).
+- Reproduced: 12-job parallel protocol, byte-identical one-command repro
+  verified; see experiments/results/m4l-tsp/.
+- Suspicion: resolves D7 — the MMAS literature advantage presumes local
+  search (the paper's results pair MMAS with 2-opt); our τ0=tau_max flat
+  start + slow ρ=0.02 is dominated by AS's fast ρ=0.5 cycle at small
+  budgets. The bounds mechanism itself (anti-stagnation) is orthogonal —
+  M3.5's DoD measured it working (diversity 51/51, restarts firing).
+- Action: reported as the table's headline finding, nothing tuned: "the
+  variant matters less than whether you refine at all" — 2-opt's median
+  improvement is 6.8–16.6 points of gap, vs ≤1.6 between variants+LS.
+  Also the honest protocol note: reduced grid (10 seeds × 100 iters) for
+  wall-clock; stated in every caption. Feeds Post 4 (stats discipline)
+  and the demo video's Act-2 narration.
+- Reading trigger: R2.1 (MMAS), R2.3 (variants table — this IS the
+  "fixes to bugs we saw" centerpiece row).
