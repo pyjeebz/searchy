@@ -1,0 +1,16 @@
+# M4-L — lean TSP validation table.
+#
+# Protocol (charter v2/v3): AS vs MMAS ± 2-opt, 3 instances × 30 seeds,
+# equal construction budget (m = n ants, 200 iterations, verbatim for all
+# four methods). Solver parameters are the module defaults (literature
+# settings) — nothing tuned. One command reproduces everything:
+#   uv run python -m searchy.tsp_experiment experiments/configs/m4l-tsp.yaml
+
+name: m4l-tsp
+instances: [eil51, berlin52, eil101]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+n_ants: n            # m = n cities (standard AS/MMAS setting)
+n_iterations: 200    # equal construction budget for all methods
+data_dir: data/tsplib
+output_dir: experiments/results/m4l-tsp
+figure_dir: experiments/results/figures
