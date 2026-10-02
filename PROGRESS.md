@@ -27,6 +27,32 @@ one commit + tag per milestone.
   results; G6 is the last open Stage 1 item before Stage 2 (reading, human)
   runs in parallel with Stage 3 (lean TSP sprint).
 
+## Human queue — [me] (logged 2026-10-02; work whenever ready, none of it blocks the agent)
+
+Reading (Stage 2, trimmed to 4 core items; triggers are all LIVE — logged
+in docs/diagnosis-log.md):
+1. **R1.1** — read Dorigo & Stützle ch.1–2 (or Scholarpedia). Trigger:
+   D3/D4 (stagnation, flat learning curve from query ~5). Unlocks: Post 2
+   mechanics section.
+2. **R2.1** — read Stützle & Hoos 2000 (MAX-MIN AS). Trigger: D5 (τ
+   lock-in; sabotaged tool can't be unlearned). Unlocks: Post 3 pheromone
+   bounds; feeds the M6-RT backport.
+3. **R2.3** — build the variants comparison table (AS/ACS/MMAS × 6
+   attributes) framed as "fixes to bugs we saw." Unlocks: Post 3
+   centerpiece.
+4. **R3.1** — skim AMRO-S + ACO-ToT. Unlocks: Post 2 sidebar.
+
+Blog (Stage 6): Post 1 "I Built a Search Agent That Routes Like an Ant
+Colony" — material ready: docs/demo-script.md (2-min narration),
+figures/m6.6-sabotage.png + .gif (money plot), all committed results.
+Outreach (TB.3) can start when Post 1 ships.
+
+Track B (2–3h/week cap): TB.1 Firecrawl Discord presence; TB.2 1–2 small
+PRs to github.com/firecrawl/firecrawl (read CONTRIBUTING.md first).
+
+Backlog (trimmed in charter v2; revisit only if a milestone demands):
+R1.2, R2.2, R3.2.
+
 ## Kickoff / scaffold
 - [x] [agent] Repo scaffold + CLAUDE.md + ROADMAP.md + PROGRESS.md (tag: kickoff)
 
@@ -90,8 +116,21 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
 - [ ] [me] (backlog) R3.2 DyNACO anti-stagnation — trimmed in charter v2
 
 ## Stage 3 — Lean TSP validation sprint (~1 week) — [agent]
-- [ ] [agent] M0.2 TSPLIB loader (EUC_2D: eil51, berlin52, eil101) — sanity: eil51 NN ≈ 426±15%, berlin52 opt 7542, eil101 opt 629
-- [ ] [agent] M0.3 nearest-neighbor baseline
+- [x] [agent] M0.2 TSPLIB loader (EUC_2D: eil51, berlin52, eil101) (**DONE
+      2026-10-02**, tag m0.2 — src/searchy/tsp.py: strict EUC_2D parser,
+      TSPLIB's rounded-Euclidean convention d=floor(√(dx²+dy²)+0.5) (Reinelt),
+      known optima {eil51: 426, berlin52: 7542, eil101: 629}; instances
+      downloaded verbatim into data/tsplib/ (Heidelberg's official server
+      returns an HTML "not available" page; used the mastqe/tsplib GitHub
+      mirror — dimensions + EUC_2D headers verified, optima checked via NN
+      landscape). 19 new tests)
+- [x] [agent] M0.3 nearest-neighbor baseline (**DONE 2026-10-02**, tag m0.2
+      — best-of-all-starts NN: eil51 482 (+13.15% — inside the roadmap's
+      426±15% anchor), berlin52 8181 (+8.47%), eil101 746 (+18.60%).
+      Measured note: eil101's best NN misses the 15% band — that is the
+      instance's rougher NN landscape (mean gap +32.3%), not a loader bug;
+      test ceilings set per-instance with the numbers cited. Mean NN gaps
+      23.2/24.3/32.3%)
 - [ ] [agent] M3.1 AS from scratch on eil51 — median gap <8% over 10 seeds
 - [ ] [agent] M3.5 MMAS + restarts — diversity ≠ 0 for 50 consecutive iterations across 500
 - [ ] [agent] M3.6 2-opt refinement + runtime-share measurement
@@ -207,3 +246,13 @@ Human credit approval REQUIRED before FO.1. Doc > demo; cut at 2 days.
   re-run). Stage 1's honest record: M6.5 split negative, M6.6 negative,
   M6.7 descriptive — the failures are logged and are the Stage-2 reading
   triggers and Stage-4 before-pictures, per the demo-first bet.
+- 2026-10-02: Human queue logged at the top of this file (reading R1.1,
+  R2.1, R2.3, R3.1 with live triggers; Post 1 material ready; Track B).
+  M0.2+M0.3 closed (tag m0.2). Heidelberg's TSPLIB server is dead
+  (returns an HTML "not available" page — NOT instance data); instances
+  fetched from the mastqe/tsplib GitHub mirror and verified against
+  published optima via the NN landscape. eil101's best-of-all-starts NN
+  is +18.60% over optimum — outside the eil51-style ±15% band; logged as
+  a measured instance property (its mean NN gap is +32.3%), not tuned or
+  hidden. Loader enforces TSPLIB's rounded-EUC_2D (floor(d+0.5)) — the
+  float-distance version would shift eil51's optimum by ~0.4%.
