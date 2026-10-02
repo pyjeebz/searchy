@@ -131,7 +131,16 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
       instance's rougher NN landscape (mean gap +32.3%), not a loader bug;
       test ceilings set per-instance with the numbers cited. Mean NN gaps
       23.2/24.3/32.3%)
-- [ ] [agent] M3.1 AS from scratch on eil51 — median gap <8% over 10 seeds
+- [x] [agent] M3.1 AS from scratch on eil51 (**DONE 2026-10-02**, tag m3.1 —
+      src/searchy/tsp_aco.py: plain AS (all ants deposit, τ unbounded),
+      standard literature settings (m=n=51 ants, α=1, β=5, ρ=0.5, Q=100,
+      τ0=1e-6), 200 iterations, 10 seeds. **Median gap 6.22% < 8% DoD MET**
+      (mean 5.47%, min 2.82%, max 7.04%). Build finding D6 logged: the
+      first build silently shipped τ·η without the α/β exponents (median
+      13.50%, and β=2 vs β=5 gave identical results — the ablation that
+      caught it); exponents fixed, regression test added. Pheromone-side
+      stagnation (AS's known weakness) is now measurable for M3.5's MMAS
+      comparison)
 - [ ] [agent] M3.5 MMAS + restarts — diversity ≠ 0 for 50 consecutive iterations across 500
 - [ ] [agent] M3.6 2-opt refinement + runtime-share measurement
 - [ ] [agent] M4-L runner + metrics + Wilcoxon → ONE table: AS vs MMAS ± 2-opt, 3 instances × 30 seeds, equal construction budget — GATE: one-command reproducibility

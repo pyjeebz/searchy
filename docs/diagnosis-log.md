@@ -201,3 +201,26 @@ Format:
   (heatmaps are purely descriptive).
 - Reading trigger: R2.1 (MMAS bounds), R2.2 (ACS exploitation), R1.2, R4;
   direct before-picture for the M6-RT backport.
+## D6. AS transition rule shipped without its exponents (M3.1 build, 2026-10-02)
+- Observed: first AS runs on eil51 (51 ants × 200 iters, 10 seeds) gave a
+  median gap of 13.50% and IDENTICAL results for beta=2 and beta=5 — the
+  heuristic weight had no effect, which is impossible if the transition
+  rule is implemented correctly.
+- Reproduced: 10-seed medians matched to the second decimal across both
+  beta settings; inspection of _construct_tour found
+  ``scores = tau[current] * eta[current]`` — the α and β exponents of the
+  documented rule τ^α·η^β were never applied (α=1 made the pheromone side
+  silently correct; β was a no-op).
+- Suspicion: the exponent application was dropped while translating the
+  docstring's formula into code; because α=1 is the default, only the β
+  ablation exposed it. A useful smoke: parameter ablations that change
+  nothing are implementation bugs until proven otherwise.
+- Action: exponents applied (scores = tau**alpha * eta**beta), alpha/beta
+  threaded into _construct_tour; regression test added
+  (tests/test_tsp_aco.py::test_alpha_beta_actually_applied — beta=0 must
+  behave differently from beta=6). After the fix: eil51 median gap 6.22%
+  (mean 5.47%, min 2.82%, max 7.04%) — M3.1 DoD (<8%) met. The pre-fix
+  numbers are kept here as the honest build record.
+- Reading trigger: none (build defect, caught by ablation); the β=2 vs β=5
+  equivalence on the broken build is a cautionary note for Post 4's
+  parameter-discipline story.
