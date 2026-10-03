@@ -74,7 +74,6 @@ experiments/results/  CSV + JSON summaries + figures/ (all committed)
 experiments/fixtures/ the recorded Firecrawl evidence (76 calls, 72 credits)
 docs/                 primer, design doc, diagnosis log D1–D12, overlay
                       doc, demo script, video script
-blog/posts/           stubs (human writes)
 data/tsplib/          eil51, berlin52, eil101 (canonical instances)
 tests/                164 tests, all passing
 ```

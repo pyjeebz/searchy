@@ -169,7 +169,7 @@ Human credit approval REQUIRED before FO.1. Rule: if FO scope grows beyond
   Firecrawl search problem → what I'd do differently at their scale.
   Interview prep + application attachment.
 
-## STAGE 6 — Blog arc (human writes; agent maintains blog/posts/*.md stubs)
+## STAGE 6 — Blog arc (human writes; lives in Notion — blog/ untracked)
 1. post-1 (~W3): "I Built a Search Agent That Routes Like an Ant Colony"
 2. post-2 (~W4): "How ACO Actually Works — Explained by a System I Built
    First" (R1.1, R3.1)

@@ -9,8 +9,9 @@ The project is also a **hiring asset for Firecrawl**: every artifact must read a
 measured product value, not research exploration. The full milestone plan lives
 in `ROADMAP.md` — that file is the single source of truth (charter v2 + v3
 amendments applied; see the changelog at its bottom). Progress tracking lives in
-`PROGRESS.md`. The repo is self-contained: planning docs stay in-repo (docs/,
-blog/posts/), not in Notion.
+`PROGRESS.md`. The repo is self-contained: planning docs stay in-repo
+(docs/); blog writing lives in Notion (human-owned — blog/ is
+untracked).
 
 ## Ownership (critical)
 - **Agent owns:** all code, experiments, scaffolding docs (primer, design doc).

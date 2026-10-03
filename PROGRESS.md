@@ -13,7 +13,7 @@ one commit + tag per milestone.
   pandas 3.0.5, pyyaml 6.0.3, pytest 9.1.1).
 - Docs restored in-repo from git history (charter v3: self-contained
   project): CLAUDE.md, ROADMAP.md, PROGRESS.md, docs/ (primer,
-  design-searchy, diagnosis-log), blog/posts/ stubs — they had been moved to
+  design-searchy, diagnosis-log) — they had been moved to
   Notion (commits 1d2872a..2adfdbf). ROADMAP.md rewritten with charter v2+v3
   amendments; this file re-baselined.
 - R1.2, R2.2, R3.2: trimmed in charter v2 for Firecrawl focus (moved to
@@ -236,8 +236,7 @@ credits ≈ $1.8 on the live recording pass + 3 probe calls).
 - [x] [agent] FO.3 docs/firecrawl-overlay.md (**DONE 2026-10-02** —
       mapping table, updated with D9/D10 findings 2026-10-03)
 
-## Stage 6 — Blog arc — [me] writes
-- [x] [agent] Scaffold blog/posts/ stubs (done at kickoff; restored in-repo 2026-10-02)
+## Stage 6 — Blog arc — [me] writes (in Notion; blog/ untracked since 2026-10-03)
 - [ ] [me] Post 1 (~W3): "I Built a Search Agent That Routes Like an Ant Colony"
 - [ ] [me] Post 2 (~W4): "How ACO Actually Works — Explained by a System I Built First"
 - [ ] [me] Post 3 (~W5): "Everything I Got Wrong, the Literature Knew by 2000"
@@ -340,4 +339,7 @@ credits ≈ $1.8 on the live recording pass + 3 probe calls).
   is +18.60% over optimum — outside the eil51-style ±15% band; logged as
   a measured instance property (its mean NN gap is +32.3%), not tuned or
   hidden. Loader enforces TSPLIB's rounded-EUC_2D (floor(d+0.5)) — the
-  float-distance version would shift eil51's optimum by ~0.4%.
+  float-distance version would shift eil51's optimum by ~0.4%.- 2026-10-03: blog/ moved back out of git (untracked, .gitignore) — blog
+  writing is human-owned and lives in Notion per the original v2 move;
+  the repo keeps the agent-owned artifacts only. The 5 post stubs stay
+  locally at blog/posts/ for the human's reference.

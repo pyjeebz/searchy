@@ -16,3 +16,6 @@ build/
 # Experiment outputs: configs AND results (CSV/JSON/figures, incl. the
 # flagship GIFs) are part of the honest record and are committed.
 # uv.lock is committed too.
+
+# Blog posts live in Notion (human-owned writing), not in-repo.
+blog/
