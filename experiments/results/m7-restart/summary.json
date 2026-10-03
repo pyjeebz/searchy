@@ -1,0 +1,73 @@
+{
+ "protocol": {
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "n_iterations": 100,
+  "n_ants": "m = n",
+  "baseline": "committed M4-L runs.csv (identical protocol)",
+  "stats": "Wilcoxon rank-sum, tie-corrected normal approx",
+  "params": "literature defaults; nothing tuned"
+ },
+ "variant": "restart",
+ "verdict": {
+  "eil51": {
+   "AS-restart": {
+    "median_gap_variant": 7.042253521126761,
+    "median_gap_baseline": 6.807511737089202,
+    "median_delta_length": -1.0,
+    "p_vs_baseline": 0.5138002763693614,
+    "n_seeds": 10
+   },
+   "AS-restart+2opt": {
+    "median_gap_variant": 0.0,
+    "median_gap_baseline": 0.0,
+    "median_delta_length": 0.0,
+    "p_vs_baseline": 0.3415080702827693,
+    "n_seeds": 10
+   }
+  },
+  "berlin52": {
+   "AS-restart": {
+    "median_gap_variant": 2.2673031026252985,
+    "median_gap_baseline": 2.784407319013524,
+    "median_delta_length": 39.0,
+    "p_vs_baseline": 0.26591039770844804,
+    "n_seeds": 10
+   },
+   "AS-restart+2opt": {
+    "median_gap_variant": 0.0,
+    "median_gap_baseline": 0.0,
+    "median_delta_length": 0.0,
+    "p_vs_baseline": 1.0,
+    "n_seeds": 10
+   }
+  },
+  "eil101": {
+   "AS-restart": {
+    "median_gap_variant": 10.492845786963434,
+    "median_gap_baseline": 10.174880763116056,
+    "median_delta_length": -2.0,
+    "p_vs_baseline": 0.3607099909133007,
+    "n_seeds": 10
+   },
+   "AS-restart+2opt": {
+    "median_gap_variant": 1.0333863275039745,
+    "median_gap_baseline": 1.1128775834658189,
+    "median_delta_length": 0.5,
+    "p_vs_baseline": 0.6420171397695367,
+    "n_seeds": 10
+   }
+  }
+ },
+ "wall_seconds": 4499.795371942997
+}

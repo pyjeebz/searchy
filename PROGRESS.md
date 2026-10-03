@@ -183,12 +183,37 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
       uv run python -m searchy.tsp_viz_demo)
 
 ## Stage 4 — Improvements, proven (Weeks 6–8)
-- [ ] [agent] M7.1 NN-tour pheromone init vs uniform τ0 (3 × 30)
-- [ ] [agent] M7.2 stagnation restart OR adaptive ρ (same protocol)
-- [ ] [agent] M7.3 candidate lists k=20 on largest instance
-- [ ] [agent] M7.4 combined improved-AS vs AS and MMAS+2-opt, p-values — GATE: "X improved Y by Z% (p<0.05, n=30)"
-- [ ] [agent] M7.5 honest negative-results log
-- [ ] [agent] M6-RT backport MMAS bounds + restart to Searchy; re-run M6.5/M6.6; before/after plots
+- [x] [agent] M7.1 NN-tour pheromone init vs uniform τ0 (**DONE
+      2026-10-03**, tag m7 — experiments/results/m7-nn_init/: the ONE
+      clean win: plain AS on eil51 6.81% → 5.52% median gap (p=0.040,
+      n=10, identical M4-L protocol); wash on berlin52/eil101 and
+      everywhere under 2-opt)
+- [x] [agent] M7.2 stagnation restart OR adaptive ρ (**DONE 2026-10-03**,
+      tag m7 — experiments/results/m7-restart/: restart@25 washes
+      everywhere (p≥0.26); 100-iter horizon never stagnates long enough)
+- [x] [agent] M7.3 candidate lists k=20 on largest instance (**DONE
+      2026-10-03**, tag m7 — experiments/results/m7-cand/: quality
+      wash (p≥0.52) but construction runtime −12% (eil51) / −44%
+      (eil101) at equal quality — the honest claim is RUNTIME)
+- [x] [agent] M7.4 combined improved-AS vs AS and MMAS+2opt, p-values
+      — GATE (**DONE 2026-10-03**, tag m7 — experiments/results/
+      m7-combined/: NO combined win; one significant NEGATIVE
+      (eil51+2opt: combined 0.23% vs AS+2opt 0.00%, p=0.044 — the greedy
+      prior hurts at tiny post-2opt margins). GATE claim taken
+      honestly: nn_init +1.3pp on eil51 plain-AS (p=0.04); candidates
+      −44% runtime at equal quality; combined buys nothing)
+- [x] [agent] M7.5 honest negative-results log (**DONE 2026-10-03** —
+      D12 in docs/diagnosis-log.md: the full grid verdict with the
+      mechanism explanation: 2-opt dominates; improvement mechanisms
+      fight over scraps at this scale)
+- [x] [agent] M6-RT backport MMAS bounds + restart to Searchy; re-run
+      M6.5/M6.6; before/after plots (**DONE 2026-10-03**, tag m6-rt —
+      BoundedPheromoneRouter (bounds Q/best_ratio-8 + restart@20,
+      transition rule inherited verbatim). MIXED honest result (D11):
+      comparison 17.70 → 18.58 (+5%); sabotage recovery 1/5 → 2/5
+      (better) but share 3/5 → 2/5 (worse — tau_min keeps the sabotaged
+      tool reachable BY DESIGN; a Pareto move). DoD still not met.
+      Figures: m6rt-comparison.png, m6rt-sabotage.png)
 
 ## Stage 5 — Firecrawl Overlay (~2 days) — [agent] **COMPLETE 2026-10-03**
 Human credit approval GIVEN 2026-10-03 (budget ≤$15; actual spend: 72

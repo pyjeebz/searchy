@@ -1,0 +1,73 @@
+{
+ "protocol": {
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "n_iterations": 100,
+  "n_ants": "m = n",
+  "baseline": "committed M4-L runs.csv (identical protocol)",
+  "stats": "Wilcoxon rank-sum, tie-corrected normal approx",
+  "params": "literature defaults; nothing tuned"
+ },
+ "variant": "cand",
+ "verdict": {
+  "eil51": {
+   "AS-cand": {
+    "median_gap_variant": 6.220657276995305,
+    "median_gap_baseline": 6.807511737089202,
+    "median_delta_length": 2.5,
+    "p_vs_baseline": 0.5183128210164185,
+    "n_seeds": 10
+   },
+   "AS-cand+2opt": {
+    "median_gap_variant": 0.2347417840375587,
+    "median_gap_baseline": 0.0,
+    "median_delta_length": -1.0,
+    "p_vs_baseline": 0.18875957054112558,
+    "n_seeds": 10
+   }
+  },
+  "berlin52": {
+   "AS-cand": {
+    "median_gap_variant": 2.863961813842482,
+    "median_gap_baseline": 2.784407319013524,
+    "median_delta_length": -6.0,
+    "p_vs_baseline": 0.8493210400200102,
+    "n_seeds": 10
+   },
+   "AS-cand+2opt": {
+    "median_gap_variant": 0.0,
+    "median_gap_baseline": 0.0,
+    "median_delta_length": 0.0,
+    "p_vs_baseline": 1.0,
+    "n_seeds": 10
+   }
+  },
+  "eil101": {
+   "AS-cand": {
+    "median_gap_variant": 10.731319554848966,
+    "median_gap_baseline": 10.174880763116056,
+    "median_delta_length": -3.5,
+    "p_vs_baseline": 0.5955927900169042,
+    "n_seeds": 10
+   },
+   "AS-cand+2opt": {
+    "median_gap_variant": 0.9538950715421304,
+    "median_gap_baseline": 1.1128775834658189,
+    "median_delta_length": 1.0,
+    "p_vs_baseline": 0.6177039795649808,
+    "n_seeds": 10
+   }
+  }
+ },
+ "wall_seconds": 4350.420129336002
+}

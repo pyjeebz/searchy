@@ -350,3 +350,31 @@ Format:
   honest "I backported the literature's fix and it half-worked" arc.
 - Reading trigger: R2.1 (MMAS bound ratios), R2.3 (variants table row);
   feeds M7.4's combined claim.
+
+## D12. M7 improvements grid: one significant win, one significant loss, mostly wash (M7.1-M7.4, 2026-10-03)
+- Observed (10 seeds x 100 iters, identical protocol to the M4-L
+  baselines, Wilcoxon per pair): nn_init significantly improves plain
+  AS on eil51 (median 5.52% vs 6.81% gap, p=0.040) — the ONE clean
+  positive. The combined variant is significantly WORSE than AS+2opt on
+  eil51 (median 0.23% vs 0.00%, p=0.044) — the one clean negative: at
+  eil51's tiny post-2opt margins, nn_init's greedy prior actively hurts
+  the refined search. Restart: p>=0.26 everywhere (the 100-iter
+  horizon never stagnates long enough to matter). Candidates k=20:
+  p>=0.52 on quality; runtime +12% (eil51) to +44% (eil101) faster
+  construction — the honest M7.3 claim is RUNTIME, not quality.
+- Reproduced: 4 parallel variant runs over the committed baselines;
+  every number in experiments/results/m7-*/summary.json.
+- Suspicion: all three mechanisms are known to matter most at (a)
+  larger instances, (b) longer budgets, (c) without 2-opt hiding their
+  effect. Our lean 100-iter/3-instance protocol (chosen for wall-clock)
+  is exactly the regime where they wash. This is the D8 lesson again:
+  2-opt dominates everything; the improvement mechanisms fight over
+  scraps.
+- Action: M7.4's GATE claim is taken honestly: "NN-init improved plain
+  AS by 1.3pp median gap on eil51 (p=0.04, n=10); candidate lists cut
+  construction time up to 44% at equal quality (p>0.5); the combined
+  variant bought nothing (one significant negative at eil51+2opt).
+  Improvements wash under 2-opt at this scale." Nothing tuned. Post 5
+  title earns its question mark.
+- Reading trigger: R2.3 (variants table: which fixes matter when);
+  the honest-negatives log (M7.5) IS this entry.
