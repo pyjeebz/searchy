@@ -343,3 +343,8 @@ credits ≈ $1.8 on the live recording pass + 3 probe calls).
   writing is human-owned and lives in Notion per the original v2 move;
   the repo keeps the agent-owned artifacts only. The 5 post stubs stay
   locally at blog/posts/ for the human's reference.
+- 2026-10-03: docs/ untracked too (planning/scaffolding docs live in
+  Notion — primer, design doc, diagnosis log, demo/video scripts,
+  overlay doc; kept locally under docs/ for reference). The repo now
+  tracks code, experiments, results, fixtures, and the three top-level
+  planning files only.

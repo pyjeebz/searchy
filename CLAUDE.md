@@ -9,9 +9,9 @@ The project is also a **hiring asset for Firecrawl**: every artifact must read a
 measured product value, not research exploration. The full milestone plan lives
 in `ROADMAP.md` — that file is the single source of truth (charter v2 + v3
 amendments applied; see the changelog at its bottom). Progress tracking lives in
-`PROGRESS.md`. The repo is self-contained: planning docs stay in-repo
-(docs/); blog writing lives in Notion (human-owned — blog/ is
-untracked).
+`PROGRESS.md`. Planning and scaffolding docs (primer, design doc,
+diagnosis log, demo scripts) live in Notion — the repo tracks code,
+experiments, and results only (docs/ and blog/ are untracked).
 
 ## Ownership (critical)
 - **Agent owns:** all code, experiments, scaffolding docs (primer, design doc).
@@ -20,8 +20,9 @@ untracked).
   Never block on human-owned items, never do them.
 - One milestone at a time. After completing a milestone: update `PROGRESS.md`,
   commit, tag (`r0.1`, `m6.1`, ...), show results, **stop and wait for review**.
-- Anything strange observed in experiments goes in `docs/diagnosis-log.md`,
-  AND is explicitly flagged to the human. Never silently patch weirdness away.
+- Anything strange observed in experiments goes in the diagnosis log
+  (Notion; locally `docs/diagnosis-log.md`), AND is explicitly flagged
+  to the human. Never silently patch weirdness away.
 - Honest results only. A well-measured negative result beats a fudged win.
 - **Live Firecrawl API calls ONLY when recording a new fixture set, and only
   with the human's explicit approval** (they cost credits). Everything else

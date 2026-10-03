@@ -14,7 +14,8 @@ review.
 3. Update PROGRESS.md after every milestone. One git commit per milestone,
    tagged (r0.1, m6.1, ...).
 4. When something behaves strangely in experiments, log it in
-   docs/diagnosis-log.md — these observations drive my reading and the blog.
+   the diagnosis log (Notion; locally docs/diagnosis-log.md) — these
+   observations drive my reading and the blog.
    Flag them to me explicitly; do not silently patch them away.
 5. Honest results only. A negative result that's well-measured beats a fudged win.
 
@@ -47,7 +48,7 @@ experiments, pytest for the listed invariants).
 
 ## STAGE 1 — Primer + Build (Weeks 1–3)
 
-### R0.1 — ACO crash primer doc (docs/primer.md)
+### R0.1 — ACO crash primer doc (Notion; locally docs/primer.md)
 Content, exactly these five things, no more:
 1. Stigmergy in one paragraph (indirect coordination via environment).
 2. The transition rule the router will use:
@@ -63,7 +64,7 @@ Start params: α=1, β=2, ρ=0.05, ε=0.1, Q=1, reward-weighted deposit.
 Gate (human must pass before coding starts): can write the transition rule and
 update equation from memory.
 
-### M6.1 — Design doc (docs/design-searchy.md)
+### M6.1 — Design doc (Notion; locally docs/design-searchy.md)
 Spec the system (adapt details if there's a problem — but justify).
 DoD: doc approved by human. Then commit, tag m6.1.
 
@@ -165,7 +166,7 @@ Human credit approval REQUIRED before FO.1. Rule: if FO scope grows beyond
 - FO.2 | Overlay demo plot: traffic share + cumulative credit spend over
   the query stream, incl. one adaptation moment (degrade one domain in
   fixtures). One figure. Do not let this balloon.
-- FO.3 | docs/firecrawl-overlay.md: the mapping table — ACO mechanism →
+- FO.3 | overlay doc (Notion; locally docs/firecrawl-overlay.md): the mapping table — ACO mechanism →
   Firecrawl search problem → what I'd do differently at their scale.
   Interview prep + application attachment.
 

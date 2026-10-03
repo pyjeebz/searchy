@@ -19,3 +19,8 @@ build/
 
 # Blog posts live in Notion (human-owned writing), not in-repo.
 blog/
+
+# Planning/scaffolding docs live in Notion too (human-owned reading and
+# notes; primer, design doc, diagnosis log, demo/video scripts, overlay
+# doc). They remain locally under docs/ for reference.
+docs/

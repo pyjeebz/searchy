@@ -29,7 +29,7 @@ honest negatives are logged, not hidden.
    95%, latency triples. Static baselines never adapt; the colony moves
    traffic within 30 queries. The honest story (D5): adaptation is real
    but plateaus — the exact failure MMAS bounds fix.
-   `docs/demo-script.md`, `figures/m6.6-sabotage.gif`
+   `figures/m6.6-sabotage.gif`
 3. **The mechanism is validated where ground truth exists.** Same
    algorithm on TSPLIB: one 12-config grid, 3 instances × 10 seeds × 4
    methods, Wilcoxon p-values, byte-identical one-command repro.
@@ -37,18 +37,17 @@ honest negatives are logged, not hidden.
 4. **Then it spends real credits, deliberately.** 76 live Firecrawl
    calls recorded ONCE (~$1.8, human-approved), committed as an auditable
    fixture set — every experiment replays free, forever, deterministically.
-   `experiments/fixtures/firecrawl-overlay.jsonl`,
-   `docs/firecrawl-overlay.md`
+   `experiments/fixtures/firecrawl-overlay.jsonl`
 
 ## Why this repo reads as product engineering
 
 - **Fixture-first honesty:** live API calls happen exactly once, with
   approval, and are logged to diffable JSONL; every reported number
   replays. Reproducibility is a command, not a promise.
-- **Honest negatives are the record:** D1–D12 in
-  `docs/diagnosis-log.md` — including two reward-scale defects caught by
-  mechanism audits, an ablation that exposed a missing exponent, and
-  negative results reported at full protocol strength.
+- **Honest negatives are the record:** twelve diagnosis-log entries
+  (D1–D12) — including two reward-scale defects caught by mechanism
+  audits, an ablation that exposed a missing exponent, and negative
+  results reported at full protocol strength.
 - **Stats discipline:** every comparison carries seeds, equal-budget
   protocol, and a tie-corrected Wilcoxon (validated against scipy to
   1e-5).
@@ -72,11 +71,12 @@ src/searchy/          router (ACO core), bounded router, tools, queries,
 experiments/configs/  one YAML per experiment (one command each)
 experiments/results/  CSV + JSON summaries + figures/ (all committed)
 experiments/fixtures/ the recorded Firecrawl evidence (76 calls, 72 credits)
-docs/                 primer, design doc, diagnosis log D1–D12, overlay
-                      doc, demo script, video script
 data/tsplib/          eil51, berlin52, eil101 (canonical instances)
 tests/                164 tests, all passing
 ```
+
+Planning docs (primer, design doc, diagnosis log, demo/video scripts,
+overlay doc) live in Notion; kept locally under `docs/` (untracked).
 
 ## Dev setup
 
