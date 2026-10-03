@@ -190,16 +190,26 @@ Trimmed to 4 core items (charter v2); R1.2/R2.2/R3.2 → optional backlog.
 - [ ] [agent] M7.5 honest negative-results log
 - [ ] [agent] M6-RT backport MMAS bounds + restart to Searchy; re-run M6.5/M6.6; before/after plots
 
-## Stage 5 — Firecrawl Overlay (~2 days, after Stage 4) — [agent]
-Human credit approval REQUIRED before FO.1. Doc > demo; cut at 2 days.
-- [x] [agent] FO.1 fixture layer (record/replay, credits/latency logged;
-      tests for determinism, misses, accounting) (**BUILT 2026-10-02** —
-      awaiting human approval + FIRECRAWL_API_KEY for the ONE recording
-      pass, ≤$15; FO_QUERY_SET: 25 queries / 4 types defined)
-- [ ] [agent] FO.2 overlay demo plot (traffic share + cumulative credit spend, one adaptation moment) — one figure
-- [x] [agent] FO.3 docs/firecrawl-overlay.md — mapping table (**DONE
-      2026-10-02** — ACO mechanism → Firecrawl credit problem → what
-      changes at scale; interview prep + application attachment)
+## Stage 5 — Firecrawl Overlay (~2 days) — [agent] **COMPLETE 2026-10-03**
+Human credit approval GIVEN 2026-10-03 (budget ≤$15; actual spend: 72
+credits ≈ $1.8 on the live recording pass + 3 probe calls).
+- [x] [agent] FO.1 fixture record (**DONE 2026-10-03** — the ONE live
+      pass: 76 calls (25 /search + 1 /map + 50 /scrape markdown+json),
+      72 credits, ~40 min, 4 recorded source timeouts kept as evidence;
+      experiments/fixtures/firecrawl-overlay.jsonl committed (2.0 MB);
+      remaining credits: 1195). Resumable recorder in searchy/fo_record.py
+- [x] [agent] FO.2 overlay demo plot (**DONE 2026-10-03** — one figure:
+      figures/fo-overlay.png (traffic share per tool + cumulative
+      effective cost vs 3 static policies; grey lines = recorded source
+      failures). Router learns for real (markdown τ 1→31 vs json τ→8;
+      /search τ→25). MEASURED, 30 seeds, fixture-replayed, zero further
+      credits: router effective cost 87.5 beats random 101.0
+      (p=0.0038) and the wrong default always-map-json 148.9 (−41%);
+      loses to the right default always-search-markdown 57.5 — honest
+      negative (D10): ε-exploration can't amortize on a 25-query
+      stream when the default is already right. No tuning.)
+- [x] [agent] FO.3 docs/firecrawl-overlay.md (**DONE 2026-10-02** —
+      mapping table, updated with D9/D10 findings 2026-10-03)
 
 ## Stage 6 — Blog arc — [me] writes
 - [x] [agent] Scaffold blog/posts/ stubs (done at kickoff; restored in-repo 2026-10-02)

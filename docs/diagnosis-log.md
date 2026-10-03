@@ -275,3 +275,52 @@ Format:
   and the demo video's Act-2 narration.
 - Reading trigger: R2.1 (MMAS), R2.3 (variants table — this IS the
   "fixes to bugs we saw" centerpiece row).
+
+## D9. Overlay reward scale: raw credits price quality out of learning (FO.2 build, 2026-10-02)
+- Observed: first overlay run showed /search traffic share climbing from
+  0.37 to 0.90 — looked like learning — but tau inspection showed the
+  matrix IDENTICAL (1.0, 1.0) for the entire stream: deposits never
+  flowed. The share drift was the query MIX (docs queries advertise
+  /map; news/product/factual advertise /search), not pheromone.
+- Reproduced: per-query reward computation showed EVERY option nets a
+  negative reward at the raw-credit scale (base 1-credit price exceeds
+  the 1.0 max quality; scrape latencies add 1-12 more). With the R1
+  deposit clip (max(0, R)), every deposit is 0 → tau frozen forever.
+- Suspicion: the same defect class as Searchy's D1 — the cost scale was
+  set without checking it against the quality scale. Caught here by
+  auditing tau directly (the same probe that caught the M3.1 exponent
+  bug, D6: a mechanism that isn't moving is a bug until proven
+  otherwise).
+- Action (a priori, stated in every caption, mirroring the D1 ruling):
+  reward cost term scaled by COST_SCALE=50 — a typical scrape's penalty
+  is ~0.04 vs quality 1.0, a recorded ~90s timeout ~0.26. Deposits now
+  flow (markdown tau 1.0 → 31.2 vs json → 8.0 over the stream). Product
+  metric for the FIGURE stays raw (API credits + latency-equivalents at
+  7.7s/credit) — with per-call pricing every policy spends the same 50
+  API credits, so the honest savings live in latency-equivalents and
+  quality, and the caption says exactly that.
+- Reading trigger: none (build defect); cautionary-tale companion to
+  D1/D6 for the blog's "parameter discipline" thread.
+
+## D10. Overlay honest result: exploration can't pay for itself in 25 queries when the default is right (FO.2, 2026-10-02)
+- Observed: measured effective cost (API credits + latency-equivalents):
+  always-search-markdown 57.5 < router 87.5 < random 101.0 (p=0.0038,
+  30 seeds each) < always-map-json 148.9. The router beats random and
+  the wrong default decisively (61.4 effective credits saved, 41%), but
+  LOSES to the obvious right default by ~30.
+- Reproduced: 30 seeded router runs over the committed fixtures; the
+  static policies are deterministic functions of the same fixtures.
+- Suspicion: none — mechanism understood. The 25-query stream is too
+  short for ε=0.1 exploration to amortize: the uniform start + 10%
+  lifelong exploration tax costs ~0.7 effective credits/query, and the
+  right default pays zero learning cost. With a longer stream or a
+  WRONG default config (the realistic enterprise case: defaults are
+  static, domains shift), the router's learning pays.
+- Action: reported as the honest headline — no tuning, no stream
+  extension to manufacture a win (charter rule: claims are measured).
+  The demo caption leads with the defensible claim: "beats random
+  (p=0.004) and saves 41% vs the wrong static default; loses to the
+  right default on a 25-query stream — the crossover is future work."
+  Post 6 (overlay section) gets the full treatment.
+- Reading trigger: R1.1 (exploration/exploitation); feeds the overlay
+  doc's "what I'd do differently" row (decay ε over the stream).
