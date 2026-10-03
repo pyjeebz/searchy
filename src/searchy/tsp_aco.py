@@ -380,6 +380,8 @@ def run_as_timed(
     seed: int,
     *,
     local_search: bool = False,
+    nn_init: bool = False,
+    restart_threshold: int | None = None,
     snapshot_iterations: tuple[int, ...] = (),
     rng: np.random.Generator | None = None,
     **as_kwargs: float,
@@ -392,6 +394,13 @@ def run_as_timed(
     update — lengths improve, so the RNG stream diverges from the control
     by design (different probabilities), which is the phenomenon M4-L
     measures under equal budget.
+
+    M7 options (each off by default; on = the named experiment):
+    - ``nn_init`` (M7.1): before iteration 1, the best-of-all-starts NN
+      tour's edges get tau0 deposited — a cheap prior where the colony
+      starts from the greedy structure instead of uniform τ0.
+    - ``restart_threshold`` (M7.2): if no new best for this many
+      consecutive iterations, τ resets to tau0 everywhere (restart).
 
     ``snapshot_iterations`` captures tau right after those 1-based
     iterations (post-update), for the M4-L pheromone heatmap.
@@ -418,6 +427,19 @@ def run_as_timed(
     snapshots: dict[int, np.ndarray] = {}
     construct_s = 0.0
     ls_s = 0.0
+    since_improvement = 0
+
+    if nn_init:
+        # M7.1: seed tau with the best-of-all-starts NN tour's edges.
+        from searchy.tsp import nearest_neighbor_tour
+
+        nn = min(
+            (nearest_neighbor_tour(dist, start=s) for s in range(n)),
+            key=lambda t: tour_length(t, dist),
+        )
+        edges = np.stack([nn, np.roll(nn, -1)])
+        tau[edges[0], edges[1]] += float(as_kwargs.get("tau0", TAU0))
+        tau[edges[1], edges[0]] += float(as_kwargs.get("tau0", TAU0))
 
     for it in range(n_iterations):
         t0 = time.perf_counter()
@@ -436,6 +458,9 @@ def run_as_timed(
             best_length = int(lengths[it_best])
             best_tour = tours[it_best].copy()
             best_iteration = it + 1
+            since_improvement = 0
+        else:
+            since_improvement += 1
         history_best[it] = best_length
 
         tau *= 1.0 - rho
@@ -444,6 +469,12 @@ def run_as_timed(
             edges = np.stack([t, np.roll(t, -1)])
             tau[edges[0], edges[1]] += deposit
             tau[edges[1], edges[0]] += deposit
+
+        if restart_threshold is not None and since_improvement >= restart_threshold:
+            tau = np.full((n, n), float(as_kwargs.get("tau0", TAU0)))
+            np.fill_diagonal(tau, 0.0)
+            since_improvement = 0
+
         if it + 1 in set(snapshot_iterations):
             snapshots[it + 1] = tau.copy()
 

@@ -1,0 +1,53 @@
+{
+ "protocol": {
+  "n_seeds": 5,
+  "query_seed": 100,
+  "n_queries": 100,
+  "sabotage_event": 50,
+  "note": "identical to committed M6.5/M6.6; only the router class changes",
+  "router_delta": "MMAS bounds (Q/best, ratio 8) + restart after 20 stagnant queries"
+ },
+ "comparison": {
+  "before_mean_cumulative": 17.701420723387557,
+  "after_mean_cumulative": 18.582336216384554,
+  "before_mean_reward": 0.17701420723387556,
+  "after_mean_reward": 0.18582336216384562
+ },
+ "sabotage": {
+  "before": {
+   "share_pass": 3,
+   "recovery_pass": 1
+  },
+  "after": {
+   "share_pass": 2,
+   "recovery_pass": 2
+  },
+  "dod_required": 4,
+  "restarts_after": [
+   [
+    30,
+    50,
+    100
+   ],
+   [
+    30,
+    90
+   ],
+   [
+    50,
+    70,
+    90
+   ],
+   [
+    40,
+    80,
+    100
+   ],
+   [
+    50,
+    70,
+    90
+   ]
+  ]
+ }
+}

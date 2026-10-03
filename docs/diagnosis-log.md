@@ -324,3 +324,29 @@ Format:
   Post 6 (overlay section) gets the full treatment.
 - Reading trigger: R1.1 (exploration/exploitation); feeds the overlay
   doc's "what I'd do differently" row (decay ε over the stream).
+
+## D11. M6-RT backport: bounds help the comparison and recovery, not the share clause (M6-RT, 2026-10-03)
+- Observed: BoundedPheromoneRouter (MMAS bounds Q/best_reward with ratio 8,
+  restart after 20 stagnant queries; everything else inherited verbatim)
+  on the identical M6.5/M6.6 protocol: comparison cumulative reward
+  17.70 → 18.58 (+5.0%, same 5 seeds/stream); sabotage share clause
+  3/5 → 2/5 (WORSE), recovery clause 1/5 → 2/5 (better). DoD still not
+  met (needs 4/5 on both).
+- Reproduced: per-seed table shows the share clause misses at exactly
+  0.20 on three seeds (strict <) — the bounded floor tau_min keeps
+  web_search reachable, and restarts (firing 2-3x per run, often at/after
+  the #50 event) deliberately re-explore ALL tools including the
+  sabotaged one.
+- Suspicion: mechanism understood, not a bug — tau_min bounds the
+  probability ratio at 8x, so a sabotaged tool can never be fully
+  abandoned (by design: it might recover, and the epsilon floor kept
+  ~3% share anyway in the plain router). The recovery improvement is
+  where the mechanism pays: bounded tau lets evaporation actually drag
+  the lying-ad score down, so realized rewards recover faster (seeds
+  0/1 now pass vs 1 before).
+- Action: reported honestly as a MIXED result; nothing tuned (rule 4).
+  The demo story is now sharper: bounds trade share-collapse for
+  recovery speed — a Pareto move, not a strict win. Post 5 gets the
+  honest "I backported the literature's fix and it half-worked" arc.
+- Reading trigger: R2.1 (MMAS bound ratios), R2.3 (variants table row);
+  feeds M7.4's combined claim.
